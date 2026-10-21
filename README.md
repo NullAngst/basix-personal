@@ -2,8 +2,6 @@
 
 My bpm repository for Basix Linux: KDE Plasma 6 on Wayland (Qt 6.12, KDE Frameworks 6.31, Plasma 6.8, a few Gear apps) plus wpa_supplicant and tuigreet, for anyone on Basix who wants a full desktop next to core's Sway.
 
-[Basix-Installer](https://github.com/NullAngst/Basix-Installer) adds this repo on its own when you pick Plasma or Wi-Fi. This README is for using it by hand and for keeping it current.
-
 ## Status
 
 Nothing here has been built on a Basix machine yet. The environment I wrote it in had no Basix system, no VM and no access to download.kde.org or download.qt.io. What has been checked:
