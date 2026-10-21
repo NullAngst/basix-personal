@@ -1,0 +1,33 @@
+Origin: written for basix-personal
+Why: Qt Graphs is not packaged; build kinfocenter without the energy KCM instead of failing
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a365159..a8c010f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,9 +26,11 @@ include(ECMQmlModule)
+ 
+ option(BUILD_DOC "Whether to build the documentation" ON)
+ 
++# Qt Graphs is only used by the energy KCM; without it that one KCM is skipped.
++find_package(Qt6Graphs ${QT_MIN_VERSION} CONFIG QUIET)
++
+ find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+     Core
+-    Graphs
+     Gui
+     Qml
+     Widgets
+diff --git a/kcms/CMakeLists.txt b/kcms/CMakeLists.txt
+index 39abd54..a6886e2 100644
+--- a/kcms/CMakeLists.txt
++++ b/kcms/CMakeLists.txt
+@@ -33,7 +33,7 @@ if(USB1_FOUND)
+    add_subdirectory( usbview )
+ endif()
+ 
+-if (CMAKE_SYSTEM_NAME MATCHES Linux)
++if (CMAKE_SYSTEM_NAME MATCHES Linux AND TARGET Qt6::Graphs)
+     add_subdirectory(energy)
+ endif()
+ 
