@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE Plasma Desktop"
 home_page="https://invent.kde.org/plasma/plasma-desktop"
-license="GPL-2.0-only, LGPL-2.1-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GFDL-1.2-or-later, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT, Unicode-DFS-2016"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-desktop-${version}.tar.xz"
-checksum=""
+checksum="abf02ee1e12976a79d28b5cfee1d7eb6d2a1342dcabf4380be6d62a70a6201e8"
 
 use_flags="man -doc -nls"
 depends="SDL2 attica baloo fontconfig kauth kcmutils kcodecs kconfig

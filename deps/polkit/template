@@ -6,7 +6,7 @@ short_desc="Toolkit for authorizing privileged actions (duktape engine, elogind 
 home_page="https://github.com/polkit-org/polkit"
 license="LGPL-2.0-or-later"
 dist_files="https://github.com/polkit-org/polkit/archive/refs/tags/${version}.tar.gz>polkit-${version}.tar.gz"
-checksum=""
+checksum="1c5e7d3264e7daa4b4e8aaad2314eda01310348a125e7859ac477012d2670e71"
 wrk_src="polkit-$version"
 
 use_flags="man services"

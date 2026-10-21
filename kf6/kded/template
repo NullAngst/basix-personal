@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Extensible deamon for providing system level services"
 home_page="https://invent.kde.org/frameworks/kded"
-license="LGPL-2.1-only, LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kded-${version}.tar.xz"
-checksum=""
+checksum="2084d32f7346d096347a321dcd210ad6f08caa67659288c0696cb9191fee4a67"
 
 use_flags="man -doc -nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kservice qt6-base"

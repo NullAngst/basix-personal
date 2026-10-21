@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="ssh-add helper that uses kwallet and kpassworddialog"
 home_page="https://invent.kde.org/plasma/ksshaskpass"
-license="GPL-2.0-or-later"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/ksshaskpass-${version}.tar.xz"
-checksum=""
+checksum="ab69c73922437aa5d50911af0e03ff347bd8df3ce2cc40bf37d67ecc4bf04cc4"
 
 use_flags="man -doc -nls"
 depends="kconfig kcoreaddons ki18n kwallet kwidgetsaddons qt6-base

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="User configurable main windows"
 home_page="https://invent.kde.org/frameworks/kxmlgui"
-license="LGPL-2.1-only, LGPL-2.1-or-later"
+license="BSD-2-Clause, CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kxmlgui-${version}.tar.xz"
-checksum=""
+checksum="5aeda3c09ce591baff10d3a068f2fa4a9e3cc74c430e570cfa108440a6dbb51b"
 
 use_flags="-nls"
 depends="attica kconfig kconfigwidgets kcoreaddons kglobalaccel

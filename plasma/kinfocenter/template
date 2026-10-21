@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A utility that provides information about a computer system"
 home_page="https://invent.kde.org/plasma/kinfocenter"
-license="GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, FSFAP, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/kinfocenter-${version}.tar.xz"
-checksum=""
+checksum="c86ac1532a20416072c4287fbb4303eb2b49a91bfdef5c8f9ede9ef2420edd12"
 
 use_flags="man -doc -nls"
 depends="kauth kcmutils kcompletion kconfig kconfigwidgets kcoreaddons

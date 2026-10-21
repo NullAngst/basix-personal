@@ -6,7 +6,7 @@ short_desc="X Resize and Rotate extension library"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxrandr"
 license="MIT"
 dist_files="https://www.x.org/releases/individual/lib/libXrandr-${version}.tar.xz"
-checksum=""
+checksum="c107a47d9c4329996d74d7a1ab8d254a2cf3aecea1575d7e146da9a06b762081"
 depends="libX11 libXext libXrender"
 make_depends="libX11 libXext libXrender pkgconf util-macros xorgproto"
 

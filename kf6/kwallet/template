@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Secure and unified container for user passwords"
 home_page="https://invent.kde.org/frameworks/kwallet"
-license="LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later, LGPL-3.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kwallet-${version}.tar.xz"
-checksum=""
+checksum="e12469cf0819541ac1ab3924cb4dd5e40dc3333cc307d312e131c9686e7975f2"
 
 use_flags="x11 man -doc -nls"
 depends="gpgme kcolorscheme kconfig kconfigwidgets kcoreaddons kcrash

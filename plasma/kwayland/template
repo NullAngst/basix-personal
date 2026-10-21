@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Qt-style Client and Server library wrapper for the Wayland libraries"
 home_page="https://invent.kde.org/plasma/kwayland"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT, MIT-CMU"
 dist_files="https://download.kde.org/stable/plasma/${version}/kwayland-${version}.tar.xz"
-checksum=""
+checksum="c6fadad20969ff084054f2cde40aff3dbfe980d7d88e2e7c9e3f1d5de6f4c2ba"
 
 use_flags="-nls"
 depends="mesa qt6-base qt6-wayland wayland"

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Framework for providing abstractions to get the developer's purposes fulfilled"
 home_page="https://invent.kde.org/frameworks/purpose"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/purpose-${version}.tar.xz"
-checksum=""
+checksum="9fe2f5233e2a0f1823cb006f5e7190933915611556cd86cc2374888799ae1e98"
 
 use_flags="-nls"
 depends="kcmutils kconfig kcoreaddons ki18n kio kirigami kitemmodels

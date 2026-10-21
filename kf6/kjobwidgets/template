@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Widgets for tracking KJob instances"
 home_page="https://invent.kde.org/frameworks/kjobwidgets"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kjobwidgets-${version}.tar.xz"
-checksum=""
+checksum="05f513e45b8cb45e220a82f385c37f2f3ff7dd4056d524b1bf4021736073608e"
 
 use_flags="x11 -nls"
 depends="kcoreaddons knotifications kwidgetsaddons qt6-base"

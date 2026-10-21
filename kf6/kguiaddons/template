@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Addons to QtGui"
 home_page="https://invent.kde.org/frameworks/kguiaddons"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kguiaddons-${version}.tar.xz"
-checksum=""
+checksum="f19750da8f129c88c70964d66fe5d7f47c7f8fa482bebb2843399d8eef945dde"
 
 use_flags="x11 -nls"
 depends="libX11 libxcb qt6-base qt6-declarative qt6-wayland wayland"

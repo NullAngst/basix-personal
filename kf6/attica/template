@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Freedesktop OCS binding for Qt"
 home_page="https://invent.kde.org/frameworks/attica"
-license="LGPL-2.0-or-later"
+license="CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/attica-${version}.tar.xz"
-checksum=""
+checksum="2bb3fb6d9328275a9f16a24643428ede0243c252242bb084cc1bab714fa34f5c"
 
 use_flags="-nls"
 depends="qt6-base"

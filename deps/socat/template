@@ -6,7 +6,7 @@ short_desc="Multipurpose relay (pam_kwallet_init uses it)"
 home_page="http://www.dest-unreach.org/socat"
 license="GPL-2.0-only"
 dist_files="http://www.dest-unreach.org/socat/download/socat-${version}.tar.gz"
-checksum=""
+checksum="2c226c68fb72c5c931b8771413a2599aefb83dfc4c8204507eefc2a3161fe1d1"
 
 make_depends="linux-headers"
 configure_args="--disable-openssl --disable-readline --disable-libwrap"

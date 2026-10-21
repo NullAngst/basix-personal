@@ -6,7 +6,7 @@ short_desc="Barcode reading and writing library (used by prison)"
 home_page="https://github.com/zxing-cpp/zxing-cpp"
 license="Apache-2.0"
 dist_files="https://github.com/zxing-cpp/zxing-cpp/archive/v${version}.tar.gz>zxing-cpp-${version}.tar.gz"
-checksum=""
+checksum="f35241a77d5cd32746282ff772735bcc5ae5cb9a2034d3d510924f85ad083211"
 
 make_depends="cmake samurai pkgconf"
 configure_args="-G Ninja -DBUILD_SHARED_LIBS=ON

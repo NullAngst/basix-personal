@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="An easy to use, but flexible, composited Window Manager"
 home_page="https://invent.kde.org/plasma/kwin"
-license="GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/kwin-${version}.tar.xz"
-checksum=""
+checksum="7209fac64cfb6b52ba3d9f10c0c1786cdf7691d6445f050affaef1650db3d42d"
 
 use_flags="x11 man -doc -nls"
 depends="aurorae breeze fontconfig kauth kcmutils kcolorscheme

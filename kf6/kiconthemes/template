@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support for icon themes"
 home_page="https://invent.kde.org/frameworks/kiconthemes"
-license="LGPL-2.1-only"
+license="CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kiconthemes-${version}.tar.xz"
-checksum=""
+checksum="3b7710f18857433a70c5ff31ae098af7089967be44a5852a5307491496dec326"
 
 use_flags="-nls"
 depends="karchive kcolorscheme kconfigwidgets kcoreaddons ki18n

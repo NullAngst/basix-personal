@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Artwork, styles and assets for the Breeze visual style for the Plasma Desktop"
 home_page="https://invent.kde.org/plasma/breeze"
-license="GPL-2.0-or-later"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/breeze-${version}.tar.xz"
-checksum=""
+checksum="49969d36bc8dcaa195d261ecd8d26f88e9d4f64e00789a21710e1188b1bdeb82"
 
 use_flags="-nls"
 depends="frameworkintegration kcmutils kcolorscheme kconfig kcoreaddons

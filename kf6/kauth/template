@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Abstraction to system policy and authentication features"
 home_page="https://invent.kde.org/frameworks/kauth"
-license="LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kauth-${version}.tar.xz"
-checksum=""
+checksum="41005d55b335b674c6c33bdabc687190b0b048eb7a9b59a5b557321c147f2141"
 
 use_flags="-nls"
 depends="kcoreaddons kwindowsystem polkit-qt6 qt6-base"

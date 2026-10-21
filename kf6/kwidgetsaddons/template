@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Addons to QtWidgets"
 home_page="https://invent.kde.org/frameworks/kwidgetsaddons"
-license="GPL-2.0-only, LGPL-2.1-only, Unicode-DFS-2016"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, LGPL-3.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kwidgetsaddons-${version}.tar.xz"
-checksum=""
+checksum="f8f31bcc6594d498a25c4f6d3d1569df8a4e2f21c5bc38c8a51f0109d85e21ce"
 
 use_flags="-nls"
 depends="qt6-base"

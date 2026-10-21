@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="High-level multithreading framework"
 home_page="https://invent.kde.org/frameworks/threadweaver"
-license="LGPL-2.1-only"
+license="CC0-1.0, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/threadweaver-${version}.tar.xz"
-checksum=""
+checksum="ce96b41eae19a10bd2f3ce9e9377c211bdb56a3560637592672d2e58031a1224"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative"

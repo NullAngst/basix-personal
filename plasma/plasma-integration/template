@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Qt Platform Theme integration plugins for the Plasma workspace"
 home_page="https://invent.kde.org/plasma/plasma-integration"
-license="LGPL-2.1-only, LGPL-3.0-only, Nokia-Qt-exception-1.1, GPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-integration-${version}.tar.xz"
-checksum=""
+checksum="8af67038cc54a6999a36302df2782240c7de913c831b75a88cb5dbaf2fd813ab"
 
 use_flags="x11 -nls"
 depends="breeze kcolorscheme kconfig kconfigwidgets kguiaddons ki18n

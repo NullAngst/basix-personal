@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Advanced plugin and service introspection"
 home_page="https://invent.kde.org/frameworks/kservice"
-license="LGPL-2.1-only, LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kservice-${version}.tar.xz"
-checksum=""
+checksum="9f7c85bdb538c0fa4ee431788fcaa233bc36a6444ac620813fc135c077e00e20"
 
 use_flags="man -doc -nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons ki18n qt6-base"

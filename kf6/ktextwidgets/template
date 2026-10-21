@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Advanced text editing widgets"
 home_page="https://invent.kde.org/frameworks/ktextwidgets"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/ktextwidgets-${version}.tar.xz"
-checksum=""
+checksum="bd49ee91865c793a8efdb0fa113b1d039191d0103d64bb38c3f06d675588ec7b"
 
 use_flags="-nls"
 depends="kcompletion kconfig kconfigwidgets ki18n kiconthemes kservice

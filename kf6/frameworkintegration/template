@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Framework providing components to allow applications to integrate with a KDE Workspace"
 home_page="https://invent.kde.org/frameworks/frameworkintegration"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/frameworkintegration-${version}.tar.xz"
-checksum=""
+checksum="ca199a959bfcc4f8442c95802b9e0faaf26f72283ef8899bb69e42f64fd6a03b"
 
 use_flags="-nls"
 depends="appstream kcolorscheme kconfig kconfigwidgets ki18n

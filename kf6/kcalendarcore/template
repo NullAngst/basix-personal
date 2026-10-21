@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="The KDE calendar access library"
 home_page="https://invent.kde.org/frameworks/kcalendarcore"
-license="LGPL-2.0-or-later"
+license="BSD-3-Clause, LGPL-2.0-or-later, LGPL-3.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcalendarcore-${version}.tar.xz"
-checksum=""
+checksum="cfa3038579210243cb5190f2a8ade712a683b22f8abab6a2fc9c6a86bbce8af2"
 
 use_flags="-nls"
 depends="libical qt6-base qt6-declarative"

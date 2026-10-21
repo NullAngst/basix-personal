@@ -6,7 +6,7 @@ short_desc="Freedesktop.org MIME type database"
 home_page="https://gitlab.freedesktop.org/xdg/shared-mime-info"
 license="GPL-2.0-or-later"
 dist_files="https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/${version}/shared-mime-info-${version}.tar.gz"
-checksum=""
+checksum="ad130f2f923ab3d5455c643e6257abf3598339fdd134ad0fac4e5dbbbf070eb9"
 
 use_flags="-nls"
 

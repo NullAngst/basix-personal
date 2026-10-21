@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Breeze inspired QQC2 style"
 home_page="https://invent.kde.org/plasma/qqc2-breeze-style"
-license="LicenseRef-KDE-Accepted-LGPL, LicenseRef-KFQF-Accepted-GPL"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/qqc2-breeze-style-${version}.tar.xz"
-checksum=""
+checksum="5d1bd036565e8db262a27567d99c0aa872f23cd1965555911cae76b065af5fbf"
 
 use_flags="-nls"
 depends="kcolorscheme kconfig kconfigwidgets kguiaddons kiconthemes

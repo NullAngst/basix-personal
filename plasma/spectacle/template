@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Application for capturing desktop screenshots"
 home_page="https://invent.kde.org/plasma/spectacle"
-license="GPL-2.0-only"
+license="BSD-3-Clause, GFDL-1.2-or-later, GPL-2.0-only, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/spectacle-${version}.tar.xz"
-checksum=""
+checksum="91c8ecb0ab08156cefe92eb5b7358a58e50acd7ade83ccc97f6e858def8250b8"
 
 use_flags="x11 man -doc -nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kdeclarative

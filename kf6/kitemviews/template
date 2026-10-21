@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Widget addons for Qt Model/View"
 home_page="https://invent.kde.org/frameworks/kitemviews"
-license="GPL-2.0-only, LGPL-2.1-only"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kitemviews-${version}.tar.xz"
-checksum=""
+checksum="8a02df258b6adc69e8139112a2a1dc1a59f61272b879372b9df1143d55f87498"
 
 use_flags="-nls"
 depends="qt6-base"

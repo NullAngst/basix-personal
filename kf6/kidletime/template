@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Monitoring user activity"
 home_page="https://invent.kde.org/frameworks/kidletime"
-license="LGPL-2.0-only"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.1-or-later, MIT"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kidletime-${version}.tar.xz"
-checksum=""
+checksum="c614248b7fe8e9aac983b6a9e1c62bd540beed295a189020ac8fa4d329dba4df"
 
 use_flags="x11 -nls"
 depends="libX11 libxcb qt6-base qt6-wayland wayland"

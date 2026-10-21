@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A QtQuick based components set"
 home_page="https://invent.kde.org/frameworks/kirigami"
-license="LGPL-2.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, FSFAP, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kirigami-${version}.tar.xz"
-checksum=""
+checksum="0969e36e0a85e07b0e4f8fa1afc39d27551c1ad45ebca956773e969c75713a29"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons ki18n kwindowsystem qt6-base

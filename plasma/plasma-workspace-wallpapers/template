@@ -8,7 +8,7 @@ short_desc="Wallpapers for the Plasma Workspace"
 home_page="https://invent.kde.org/plasma/plasma-workspace-wallpapers"
 license="GPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-workspace-wallpapers-${version}.tar.xz"
-checksum=""
+checksum="de7fb366ffb7db6463bd56d210559728d47ea1948fc2333a09cbcae5c36c6421"
 
 use_flags="-nls"
 make_depends="cmake samurai pkgconf extra-cmake-modules qt6-tools"

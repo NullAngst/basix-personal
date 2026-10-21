@@ -6,7 +6,7 @@ short_desc="X cursor management library"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxcursor"
 license="MIT"
 dist_files="https://www.x.org/releases/individual/lib/libXcursor-${version}.tar.xz"
-checksum=""
+checksum="78369818c0dd2fb10374b55458429c3f53409995d01a53a07def1980290af66d"
 depends="libX11 libXfixes libXrender"
 make_depends="libX11 libXfixes libXrender pkgconf util-macros xorgproto"
 

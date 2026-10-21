@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Library for parsing CSS using the Rust cssparser crate"
 home_page="https://invent.kde.org/libraries/cxx-rust-cssparser"
-license="LGPL-2.1-only, LGPL-3.0-only, LicenseRef-KDE-Accepted-LGPL"
+license="BSD-2-Clause, CC0-1.0, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/cxx-rust-cssparser/cxx-rust-cssparser-${version}.tar.xz"
-checksum=""
+checksum="825c1852cac61b94acffd0a4cf4b78af7d7017e73f83a69b4a7eb66e6b91c4b5"
 
 # Rust crates are fetched at build time
 allow_network=yes

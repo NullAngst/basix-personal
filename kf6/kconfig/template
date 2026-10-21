@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Configuration system"
 home_page="https://invent.kde.org/frameworks/kconfig"
-license="LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later"
+license="BSD-2-Clause, BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kconfig-${version}.tar.xz"
-checksum=""
+checksum="a9b65bae3f0dc32313dcbeabe857c922551fa8c63cd7402e2b5ec8ee9273d0b7"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative"

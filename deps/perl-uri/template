@@ -6,7 +6,7 @@ short_desc="URI::Escape and friends (kdoctools needs it to build)"
 home_page="https://metacpan.org/release/URI"
 license="Artistic-1.0-Perl, GPL-1.0-or-later"
 dist_files="https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-${version}.tar.gz"
-checksum=""
+checksum="0b0829286d26bb59929069a3963e0939e7fa335cbbe3781272d8e50d1a115614"
 wrk_src="URI-$version"
 
 depends="perl"

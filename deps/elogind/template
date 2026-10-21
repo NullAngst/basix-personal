@@ -6,7 +6,7 @@ short_desc="Standalone logind: session, seat and power tracking without systemd"
 home_page="https://github.com/elogind/elogind"
 license="GPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://github.com/elogind/elogind/archive/v${version}.tar.gz>elogind-${version}.tar.gz"
-checksum=""
+checksum="2b0acd8af5635a0a5142fb46b395a02310aadf6d78b7f0db691cef57fb50b074"
 wrk_src="elogind-$version"
 
 # KWin's DRM backend only talks to logind (or ConsoleKit), so Plasma needs this.

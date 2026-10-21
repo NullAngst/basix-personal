@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Pulseaudio bindings for Qt"
 home_page="https://invent.kde.org/libraries/pulseaudio-qt"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="CC0-1.0, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/pulseaudio-qt/pulseaudio-qt-${version}.tar.xz"
-checksum=""
+checksum="8e081641307ac43a86a9af32b5914fdb153ce2cea3c0b9d029b9108ad9e1c1fd"
 
 use_flags="-nls"
 depends="glib pulseaudio qt6-base qt6-declarative"

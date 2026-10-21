@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Configuration system for KNotify"
 home_page="https://invent.kde.org/frameworks/knotifyconfig"
-license="LGPL-2.0-only"
+license="CC0-1.0, LGPL-2.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/knotifyconfig-${version}.tar.xz"
-checksum=""
+checksum="418a22f5495e8a8a88e5aca1876e6391f7f286bdd30b02634c6813c412455251"
 
 use_flags="-nls"
 depends="kcompletion kconfig ki18n kio qt6-base qt6-multimedia"

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Library to allow application developers to separate the structure of documents from the data they contain"
 home_page="https://invent.kde.org/frameworks/ktexttemplate"
-license="LGPL-2.0-or-later, LGPL-2.1-or-later"
+license="BSD-2-Clause, CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/ktexttemplate-${version}.tar.xz"
-checksum=""
+checksum="1961d7838949a77a10677bd89783a99cbe5f518a1c460dbff06c4683a811e595"
 
 use_flags="-nls"
 depends="qt6-base"

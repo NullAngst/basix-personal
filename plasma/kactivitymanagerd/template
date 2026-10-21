@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="System service to manage user's activities and track the usage patterns"
 home_page="https://invent.kde.org/plasma/kactivitymanagerd"
-license="GPL-2.0-only, GPL-3.0-only"
+license="CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/kactivitymanagerd-${version}.tar.xz"
-checksum=""
+checksum="582c65d01c0adae47bd4a117631b52a4d91b75ec08ad0bd2316f4f13b9d07890"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kglobalaccel ki18n kio

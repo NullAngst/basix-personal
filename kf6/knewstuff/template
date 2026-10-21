@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Framework for downloading and sharing additional application data"
 home_page="https://invent.kde.org/frameworks/knewstuff"
-license="LGPL-2.1-or-later"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/knewstuff-${version}.tar.xz"
-checksum=""
+checksum="af1625b16f8981546c6f2d3487a0242dd0513366e88747d2e31a6c34a0792cef"
 
 use_flags="-nls"
 depends="attica karchive kcompletion kconfig kcoreaddons ki18n

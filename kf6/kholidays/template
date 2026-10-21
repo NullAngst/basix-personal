@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support for icon themes"
 home_page="https://invent.kde.org/frameworks/kholidays"
-license="LGPL-2.0-or-later"
+license="BSD-2-Clause, CC0-1.0, GPL-3.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kholidays-${version}.tar.xz"
-checksum=""
+checksum="8781068dbd909bb3cb1b4b0ad9996f118906058f4ca1e8c2f5967a3f428fd860"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative"

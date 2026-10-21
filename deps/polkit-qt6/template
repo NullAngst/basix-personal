@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Qt wrapper around polkit-1 client libraries"
 home_page="https://invent.kde.org/libraries/polkit-qt-1"
-license="LGPL-2.1-only"
+license="BSD-3-Clause, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-${version}.tar.xz"
-checksum=""
+checksum="44ee4d15296e1d592d0e7cc683458f159755fd77214bee66112295b4473f92fe"
 
 use_flags="-nls"
 depends="polkit qt6-base"

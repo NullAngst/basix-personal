@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Integration with su for elevated privileges"
 home_page="https://invent.kde.org/frameworks/kdesu"
-license="LGPL-2.1-only"
+license="CC0-1.0, GPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kdesu-${version}.tar.xz"
-checksum=""
+checksum="a8faecd700e011e949afec3ddd116d49bd305d435f3ebc267a0c824b0255c6b5"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons ki18n kpty kservice qt6-base"

@@ -6,7 +6,7 @@ short_desc="CMake integration for Rust crates (union, kdeplasma-addons)"
 home_page="https://github.com/corrosion-rs/corrosion"
 license="MIT"
 dist_files="https://github.com/corrosion-rs/corrosion/archive/v${version}.tar.gz>corrosion-${version}.tar.gz"
-checksum=""
+checksum="3d0ce099bfc8f6033b5f2a2cefb5336b9a0f6785ee92447898cc7d15e1847333"
 
 # a CMake module: anything that uses it also needs rust at build time
 depends="cmake rust"

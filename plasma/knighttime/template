@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Helpers for scheduling the dark-light cycle"
 home_page="https://invent.kde.org/plasma/knighttime"
-license="LGPL-2.0-or-later, LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/knighttime-${version}.tar.xz"
-checksum=""
+checksum="1ccdfda80eb79e5aa61700cf612e232b23504fd0408251418c569c56d909fa0d"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kdbusaddons kholidays ki18n qt6-base

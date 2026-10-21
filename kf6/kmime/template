@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Library to assist handling MIME data"
 home_page="https://invent.kde.org/frameworks/kmime"
-license="LGPL-2.0-only, LGPL-2.0-or-later"
+license="BSD-2-Clause, BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kmime-${version}.tar.xz"
-checksum=""
+checksum="efd2844c7477630363be1430f17014cd58ccb3ff2b4931abe004d743bfad57ea"
 
 use_flags="-nls"
 depends="kcodecs qt6-base"

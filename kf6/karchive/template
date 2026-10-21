@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Qt addon providing access to numerous types of archives"
 home_page="https://invent.kde.org/frameworks/karchive"
-license="LGPL-2.0-or-later, LGPL-2.1-or-later"
+license="Apache-2.0, BSD-2-Clause, CC0-1.0, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/karchive-${version}.tar.xz"
-checksum=""
+checksum="60abec69fa638aeaee11a1d80f35f6945998d7fa88a56ed0f2a95b2634056b8a"
 
 use_flags="-nls"
 depends="bzip2 qt6-base xz zlib"

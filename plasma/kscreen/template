@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE's screen management software"
 home_page="https://invent.kde.org/plasma/kscreen"
-license="GPL-2.0-or-later, LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/kscreen-${version}.tar.xz"
-checksum=""
+checksum="71b819ef6cc7a4ebfb0cde4bf0ef042d2c7bfdf8af82509ae0e540a9bcf1fd88"
 
 use_flags="-nls"
 depends="kcmutils kconfig kconfigwidgets kcrash kdbusaddons

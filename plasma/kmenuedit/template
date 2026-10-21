@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Menu editor for Plasma Workspaces"
 home_page="https://invent.kde.org/plasma/kmenuedit"
-license="GPL-2.0-or-later"
+license="CC0-1.0, GPL-2.0-only, GPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/kmenuedit-${version}.tar.xz"
-checksum=""
+checksum="7e6a47f4cc8013e653ac53b980c5166c99e61a58a0273b40836adae9df287bdf"
 
 use_flags="man -doc -nls"
 depends="kcrash kdbusaddons kglobalaccel ki18n kiconthemes kio

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Core components for the KDE's Activities"
 home_page="https://invent.kde.org/plasma/plasma-activities"
-license="GPL-2.0-or-later, LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-activities-${version}.tar.xz"
-checksum=""
+checksum="60fbfcca462af411d2ed1555c953bb35f4216c973d4260c88f0ed067c705e8b3"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kwindowsystem qt6-base qt6-declarative"

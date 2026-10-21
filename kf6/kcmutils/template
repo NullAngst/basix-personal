@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Utilities for interacting with KCModules"
 home_page="https://invent.kde.org/frameworks/kcmutils"
-license="LGPL-2.1-only, LGPL-2.1-or-later"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcmutils-${version}.tar.xz"
-checksum=""
+checksum="490b5cfe64269420a7667b9e243a3feb213520fad7f0f433cbf3299de4e9e925"
 
 use_flags="-nls"
 depends="kconfigwidgets kcoreaddons kdeclarative kguiaddons ki18n

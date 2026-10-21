@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Flatpak Permissions Management KCM"
 home_page="https://invent.kde.org/plasma/flatpak-kcm"
-license="GPL-2.0-or-later"
+license="BSD-2-Clause, BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/flatpak-kcm-${version}.tar.xz"
-checksum=""
+checksum="e6bb61a57efed3ec88feeca9388e1f51b10ef75f13d1c6b60cd4435421cee79d"
 
 use_flags="-nls"
 depends="kcmutils kconfig kcoreaddons kdeclarative ki18n kitemmodels

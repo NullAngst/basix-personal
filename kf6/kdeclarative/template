@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Provides integration of QML and KDE Frameworks"
 home_page="https://invent.kde.org/frameworks/kdeclarative"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later, MIT"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kdeclarative-${version}.tar.xz"
-checksum=""
+checksum="50c6edc0ed8172d8a53869db2d97b376e41dcdaffd0ecc9b5b230624d24dad84"
 
 use_flags="-nls"
 depends="kconfig kglobalaccel kguiaddons ki18n kiconthemes kio kpackage

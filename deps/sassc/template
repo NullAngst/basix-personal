@@ -6,7 +6,7 @@ short_desc="Command line Sass compiler (breeze-gtk, kde-gtk-config)"
 home_page="https://github.com/sass/sassc"
 license="MIT"
 dist_files="https://github.com/sass/sassc/archive/${version}.tar.gz>sassc-${version}.tar.gz"
-checksum=""
+checksum="b335ce7f38763cbd5a3733dcb9032fb7f2a15fe7f70199612ca1748639c72d47"
 
 depends="libsass"
 make_depends="autoconf automake libtool libsass"

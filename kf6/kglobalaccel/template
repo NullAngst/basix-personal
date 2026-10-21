@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Add support for global workspace shortcuts"
 home_page="https://invent.kde.org/frameworks/kglobalaccel"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kglobalaccel-${version}.tar.xz"
-checksum=""
+checksum="f134aad7d18a60f8240a97f3a45477df48e87383c5f3fd23b08d22f67459589b"
 
 use_flags="x11 -nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kwindowsystem qt6-base

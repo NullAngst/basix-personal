@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Pty abstraction"
 home_page="https://invent.kde.org/frameworks/kpty"
-license="LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kpty-${version}.tar.xz"
-checksum=""
+checksum="84a4c50c06dc8b62e8cce15e0709556df2be2122f28630ce559b48525d7583d5"
 
 use_flags="-nls"
 depends="kcoreaddons ki18n qt6-base"

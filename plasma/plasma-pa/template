@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Plasma applet for audio volume management using PulseAudio"
 home_page="https://invent.kde.org/plasma/plasma-pa"
-license="LGPL-2.1-only, LGPL-3.0-only, GPL-2.0-only"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-pa-${version}.tar.xz"
-checksum=""
+checksum="86a8c27ed2136b098e073871e6a4258c55a5bbcbf51f2e85ad51c56f85203c6f"
 
 use_flags="man -doc -nls"
 depends="glib kcmutils kconfig kcoreaddons kdbusaddons kdeclarative
