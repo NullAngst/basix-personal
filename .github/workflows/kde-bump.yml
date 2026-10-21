@@ -1,0 +1,90 @@
+# Weekly: run tools/kde-bump and open (or refresh) one pull request with the
+# result. Uses the workflow's own GITHUB_TOKEN and the REST API, no gh CLI.
+#
+# One repository setting is needed for the token to open pull requests:
+# Settings > Actions > General > Workflow permissions >
+# "Allow GitHub Actions to create and approve pull requests".
+name: kde-bump
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: kde-bump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: kde-bump
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install b3sum
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq b3sum || cargo install --locked b3sum
+          b3sum --version
+
+      - name: Run kde-bump
+        run: |
+          rc=0
+          sh tools/kde-bump --report "$RUNNER_TEMP/report.md" || rc=$?
+          echo "BUMP_RC=$rc" >>"$GITHUB_ENV"
+          # 1 means some downloads failed; what did work is still worth a PR
+          [ "$rc" -le 1 ]
+
+      - name: Commit to the kde-bump branch
+        id: commit
+        run: |
+          if git diff --quiet; then
+            echo "Nothing changed."
+            echo "changed=no" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add -A
+          git commit -q -m "kde: bump versions and checksums ($(date -u +%Y-%m-%d))"
+          git push -f origin "$BRANCH"
+          echo "changed=yes" >>"$GITHUB_OUTPUT"
+
+      - name: Open or update the pull request
+        if: steps.commit.outputs.changed == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          api=https://api.github.com/repos/$REPO
+          auth="Authorization: Bearer $GH_TOKEN"
+          {
+            echo "Weekly run of tools/kde-bump."
+            echo
+            cat "$RUNNER_TEMP/report.md"
+            echo
+            echo "Before merging: a minor release (Plasma 6.x to 6.y, Qt 6.x to 6.y) can need"
+            echo "new dependencies or refreshed patches in kde/patches/. A build on a Basix"
+            echo "box is the real test."
+          } >"$RUNNER_TEMP/body.md"
+          title="kde: version and checksum bump ($(date -u +%Y-%m-%d))"
+          owner=${REPO%%/*}
+          num=$(curl -fsSL -H "$auth" "$api/pulls?state=open&head=$owner:$BRANCH" | jq -r '.[0].number // empty')
+          if [ -n "$num" ]; then
+            jq -n --arg t "$title" --rawfile b "$RUNNER_TEMP/body.md" '{title: $t, body: $b}' |
+              curl -fsSL -X PATCH -H "$auth" -H "Accept: application/vnd.github+json" "$api/pulls/$num" -d @- >/dev/null
+            echo "Updated pull request #$num."
+          else
+            jq -n --arg t "$title" --rawfile b "$RUNNER_TEMP/body.md" --arg h "$BRANCH" --arg base "$BASE" \
+              '{title: $t, body: $b, head: $h, base: $base}' |
+              curl -fsSL -X POST -H "$auth" -H "Accept: application/vnd.github+json" "$api/pulls" -d @- |
+              jq -r '"Opened pull request #\(.number)."'
+          fi
