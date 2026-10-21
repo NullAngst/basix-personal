@@ -1,9 +1,0 @@
-pkg_name=kde-apps-base
-version=26.08.2
-revision=1
-build_style=meta
-short_desc="Konsole, Dolphin, Kate and Ark"
-home_page="https://apps.kde.org"
-license="GPL-2.0-or-later"
-
-depends="konsole dolphin kate ark kio-extras baloo-widgets"
