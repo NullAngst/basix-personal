@@ -1,0 +1,18 @@
+pkg_name=python-cairo
+version=1.29.2
+revision=1
+build_style=meson
+short_desc="Python bindings for cairo (breeze-gtk renders its assets with it)"
+home_page="https://github.com/pygobject/pycairo"
+license="LGPL-2.1-only, MPL-1.1"
+dist_files="https://github.com/pygobject/pycairo/releases/download/v${version}/pycairo-${version}.tar.gz"
+checksum="73ddb63897ba8b71f6304e79f246fd3981d1ef9a0a9b1eab1b3bed31aec776d4"
+wrk_src="pycairo-$version"
+
+depends="cairo python"
+make_depends="cairo meson pkgconf python"
+configure_args="-Dtests=false"
+
+post_install() {
+    blicense COPYING
+}

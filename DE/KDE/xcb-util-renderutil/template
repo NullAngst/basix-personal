@@ -1,0 +1,17 @@
+pkg_name=xcb-util-renderutil
+version=0.3.10
+revision=1
+build_style=gnu-configure
+short_desc="XCB convenience functions for the Render extension"
+home_page="https://gitlab.freedesktop.org/xorg/lib/libxcb-util-renderutil"
+license="MIT"
+dist_files="https://xcb.freedesktop.org/dist/xcb-util-renderutil-${version}.tar.xz"
+checksum="085c94d08bd8181512d4ce93cf0e5bcd48cd8ed983bbb7a7bcb3a3c2312a08ea"
+depends="libxcb"
+make_depends="libxcb pkgconf util-macros xorgproto m4"
+
+configure_args="--disable-static"
+
+post_install() {
+    blicense COPYING
+}
