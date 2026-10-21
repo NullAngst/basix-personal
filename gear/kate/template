@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A multi-document, multi-view text editor"
 home_page="https://invent.kde.org/utilities/kate"
-license="LGPL-2.0-only, LGPL-2.0-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, MIT"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/kate-${version}.tar.xz"
-checksum=""
+checksum="d98e3f8f748cb0b97d8683a5c5d07682321db4ae524075f7dd9276c2b1d6f35b"
 
 use_flags="man -doc -nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kguiaddons ki18n

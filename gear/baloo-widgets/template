@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Widgets for Baloo"
 home_page="https://invent.kde.org/libraries/baloo-widgets"
-license="LGPL-2.0-only, LGPL-2.1-or-later"
+license="GPL-2.0-only, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/baloo-widgets-${version}.tar.xz"
-checksum=""
+checksum="de285cb4c8109ddcfbfea95fe713d0dbb26b9b8412864ecc73d2cf0d6d23c4d5"
 
 use_flags="-nls"
 depends="baloo kconfig kfilemetadata ki18n kio kservice qt6-base"

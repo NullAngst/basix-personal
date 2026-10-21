@@ -308,7 +308,7 @@ pkg qca
   license LGPL-2.1-or-later
   depends libressl qt6-5compat qt6-base
   args -DBUILD_WITH_QT6=ON -DQCA_SUFFIX=qt6 -DBUILD_PLUGINS=none -DWITH_ossl_PLUGIN=yes -DBUILD_TESTS=OFF -Dqca_CERTSTORE=/etc/ssl/cert.pem -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
-  checksum
+  checksum d4817c1039bbd9da16bac98132757b3ba68fafc76fe64037458e2baeb4ab890c
 end
 
 pkg qcoro
@@ -1658,11 +1658,11 @@ pkg ark
   cat gear
   home https://invent.kde.org/utilities/ark
   desc Graphical file compression/decompression utility with support for multiple formats
-  license GPL-2.0-only
+  license BSD-2-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-3.0-only, MIT
   depends karchive kconfig kcrash kdbusaddons kfilemetadata ki18n kiconthemes kio kitemmodels kparts kpty kservice kwidgetsaddons kwindowsystem libarchive qt6-base xz zlib zstd
   run shared-mime-info
   docs required
-  checksum
+  checksum f3dbf7c17ad55c86c9824a93b8748e1b7757c89b545771e4c92c3af4236af472
 end
 
 pkg baloo-widgets
@@ -1670,10 +1670,10 @@ pkg baloo-widgets
   cat gear
   home https://invent.kde.org/libraries/baloo-widgets
   desc Widgets for Baloo
-  license LGPL-2.0-only, LGPL-2.1-or-later
+  license GPL-2.0-only, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only
   depends baloo kconfig kfilemetadata ki18n kio kservice qt6-base
   docs no
-  checksum
+  checksum de285cb4c8109ddcfbfea95fe713d0dbb26b9b8412864ecc73d2cf0d6d23c4d5
 end
 
 pkg dolphin
@@ -1681,10 +1681,10 @@ pkg dolphin
   cat gear
   home https://invent.kde.org/system/dolphin
   desc KDE File Manager
-  license GPL-2.0-only
+  license BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT
   depends baloo baloo-widgets kbookmarks kcmutils kcodecs kcolorscheme kcompletion kconfig kcoreaddons kcrash kdbusaddons kfilemetadata kguiaddons ki18n kiconthemes kio knewstuff knotifications kparts ktextwidgets kuserfeedback kwidgetsaddons kwindowsystem musl-fts plasma-activities qt6-base qt6-multimedia solid
   docs optional
-  checksum
+  checksum c5cf8352ea7a14e50a0d2f756c5497ebd473121c0700d4f0652e68aea6335478
 end
 
 pkg kate
@@ -1692,10 +1692,10 @@ pkg kate
   cat gear
   home https://invent.kde.org/utilities/kate
   desc A multi-document, multi-view text editor
-  license LGPL-2.0-only, LGPL-2.0-or-later
+  license CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, MIT
   depends kconfig kcoreaddons kcrash kdbusaddons kguiaddons ki18n kiconthemes kio kitemmodels kjobwidgets knewstuff kparts ktexteditor kuserfeedback kwidgetsaddons kwindowsystem kxmlgui libplasma plasma-activities qt6-base qt6-declarative threadweaver
   docs optional
-  checksum
+  checksum d98e3f8f748cb0b97d8683a5c5d07682321db4ae524075f7dd9276c2b1d6f35b
 end
 
 pkg kio-extras
@@ -1703,12 +1703,12 @@ pkg kio-extras
   cat gear
   home https://invent.kde.org/network/kio-extras
   desc Additional components to increase the functionality of KIO
-  license GPL-2.0-or-later LGPL-2.1-only, LGPL-3.0-only
+  license BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT
   depends karchive kbookmarks kcmutils kcodecs kconfig kconfigwidgets kcoreaddons kdbusaddons kguiaddons ki18n kiconthemes kio knotifications kpty kstatusnotifieritem plasma-activities plasma-activities-stats qcoro qt6-base qt6-svg solid syntax-highlighting
   run shared-mime-info
   args -DWITH_LIBPROXY=OFF
   docs required
-  checksum
+  checksum 7884869a1e32dcf918c20d8594dd7ec76145c31d5e7ff324c9cbb3f88eab3196
 end
 
 pkg konsole
@@ -1716,10 +1716,10 @@ pkg konsole
   cat gear
   home https://invent.kde.org/utilities/konsole
   desc KDE's terminal emulator
-  license GPL-2.0-only, LGPL-2.1-or-later, Unicode-DFS-2016
+  license CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT
   depends icu kbookmarks kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kglobalaccel kguiaddons ki18n kiconthemes kio knewstuff knotifications knotifyconfig kparts kpty kservice ktextwidgets kwidgetsaddons kwindowsystem kxmlgui ncurses qcoro qt6-base qt6-multimedia
   x11 WITH_X11
   docs optional
-  checksum
+  checksum 82ed0ee6aab87e54e8bcaebd8045d0a73a8ccfcb0781e73fce87cfdb1a3f1773
 end
 

@@ -8,7 +8,7 @@ short_desc="Qt cryptographic architecture"
 home_page="https://invent.kde.org/libraries/qca"
 license="LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/qca/${version}/qca-${version}.tar.xz"
-checksum=""
+checksum="d4817c1039bbd9da16bac98132757b3ba68fafc76fe64037458e2baeb4ab890c"
 
 use_flags="-nls"
 depends="libressl qt6-5compat qt6-base"
