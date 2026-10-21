@@ -1,0 +1,10 @@
+pkg_name=kde-plasma-extras
+version=6.8.1
+revision=1
+build_style=meta
+short_desc="Optional Plasma pieces: System Monitor, wallpapers, Aurorae, Flatpak KCM, ssh-askpass, browser integration"
+home_page="https://kde.org/plasma-desktop"
+license="GPL-2.0-or-later"
+
+depends="kde-plasma-desktop plasma-systemmonitor plasma-workspace-wallpapers aurorae
+ flatpak-kcm ksshaskpass plasma-browser-integration"
