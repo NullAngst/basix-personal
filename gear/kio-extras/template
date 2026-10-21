@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Additional components to increase the functionality of KIO"
 home_page="https://invent.kde.org/network/kio-extras"
-license="GPL-2.0-or-later LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/kio-extras-${version}.tar.xz"
-checksum=""
+checksum="7884869a1e32dcf918c20d8594dd7ec76145c31d5e7ff324c9cbb3f88eab3196"
 
 use_flags="man -doc -nls"
 depends="karchive kbookmarks kcmutils kcodecs kconfig kconfigwidgets

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Graphical file compression/decompression utility with support for multiple formats"
 home_page="https://invent.kde.org/utilities/ark"
-license="GPL-2.0-only"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/ark-${version}.tar.xz"
-checksum=""
+checksum="f3dbf7c17ad55c86c9824a93b8748e1b7757c89b545771e4c92c3af4236af472"
 
 use_flags="man -doc -nls"
 depends="karchive kconfig kcrash kdbusaddons kfilemetadata ki18n

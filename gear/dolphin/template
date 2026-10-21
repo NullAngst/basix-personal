@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE File Manager"
 home_page="https://invent.kde.org/system/dolphin"
-license="GPL-2.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/dolphin-${version}.tar.xz"
-checksum=""
+checksum="c5cf8352ea7a14e50a0d2f756c5497ebd473121c0700d4f0652e68aea6335478"
 
 use_flags="man -doc -nls"
 depends="baloo baloo-widgets kbookmarks kcmutils kcodecs kcolorscheme

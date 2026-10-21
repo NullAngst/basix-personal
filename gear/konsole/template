@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE's terminal emulator"
 home_page="https://invent.kde.org/utilities/konsole"
-license="GPL-2.0-only, LGPL-2.1-or-later, Unicode-DFS-2016"
+license="CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/release-service/${version}/src/konsole-${version}.tar.xz"
-checksum=""
+checksum="82ed0ee6aab87e54e8bcaebd8045d0a73a8ccfcb0781e73fce87cfdb1a3f1773"
 
 use_flags="x11 man -doc -nls"
 depends="icu kbookmarks kcompletion kconfig kconfigwidgets kcoreaddons
