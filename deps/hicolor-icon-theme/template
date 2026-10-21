@@ -1,0 +1,15 @@
+pkg_name=hicolor-icon-theme
+version=0.18
+revision=1
+build_style=meson
+short_desc="Fallback icon theme every other theme inherits from"
+home_page="https://www.freedesktop.org/wiki/Software/icon-theme"
+license="GPL-2.0-only"
+dist_files="https://icon-theme.freedesktop.org/releases/hicolor-icon-theme-${version}.tar.xz"
+checksum=""
+
+make_depends="meson"
+
+post_install() {
+    blicense COPYING
+}

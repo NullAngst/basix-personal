@@ -1,0 +1,18 @@
+pkg_name=corrosion
+version=0.6.1
+revision=1
+build_style=cmake
+short_desc="CMake integration for Rust crates (union, kdeplasma-addons)"
+home_page="https://github.com/corrosion-rs/corrosion"
+license="MIT"
+dist_files="https://github.com/corrosion-rs/corrosion/archive/v${version}.tar.gz>corrosion-${version}.tar.gz"
+checksum=""
+
+# a CMake module: anything that uses it also needs rust at build time
+depends="cmake rust"
+make_depends="cmake samurai rust"
+configure_args="-G Ninja -DCORROSION_BUILD_TESTS=OFF"
+
+post_install() {
+    blicense LICENSE
+}

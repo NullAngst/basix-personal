@@ -1,0 +1,26 @@
+pkg_name=shared-mime-info
+version=2.4
+revision=1
+build_style=meson
+short_desc="Freedesktop.org MIME type database"
+home_page="https://gitlab.freedesktop.org/xdg/shared-mime-info"
+license="GPL-2.0-or-later"
+dist_files="https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/${version}/shared-mime-info-${version}.tar.gz"
+checksum=""
+
+use_flags="-nls"
+
+depends="glib libxml2"
+make_depends="glib libxml2 meson pkgconf $(use_if nls gettext-tiny)"
+
+configure_args="
+    -Dupdate-mimedb=false
+    -Dbuild-tests=false
+    $(use_if nls -Dbuild-translations=true -Dbuild-translations=false)"
+
+post_install() {
+    # the database is rebuilt whenever a package adds or removes MIME files
+    binstall "$FILESDIR/mime-hook" 0755 /etc/bpm/hooks/post-install 20-shared-mime-info
+    binstall "$FILESDIR/mime-hook" 0755 /etc/bpm/hooks/post-remove 20-shared-mime-info
+    blicense COPYING
+}

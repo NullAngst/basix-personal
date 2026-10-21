@@ -1,0 +1,17 @@
+pkg_name=libXcursor
+version=1.2.3
+revision=1
+build_style=gnu-configure
+short_desc="X cursor management library"
+home_page="https://gitlab.freedesktop.org/xorg/lib/libxcursor"
+license="MIT"
+dist_files="https://www.x.org/releases/individual/lib/libXcursor-${version}.tar.xz"
+checksum=""
+depends="libX11 libXfixes libXrender"
+make_depends="libX11 libXfixes libXrender pkgconf util-macros xorgproto"
+
+configure_args="--disable-static"
+
+post_install() {
+    blicense COPYING
+}

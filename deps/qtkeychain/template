@@ -1,0 +1,18 @@
+pkg_name=qtkeychain
+version=0.17.0
+revision=1
+build_style=cmake
+short_desc="Platform-independent Qt API for storing passwords (ksshaskpass)"
+home_page="https://github.com/frankosterfeld/qtkeychain"
+license="BSD-3-Clause"
+dist_files="https://github.com/frankosterfeld/qtkeychain/archive/${version}.tar.gz>qtkeychain-${version}.tar.gz"
+checksum=""
+
+depends="glib libsecret qt6-base"
+make_depends="cmake samurai pkgconf glib libsecret qt6-base qt6-tools"
+
+configure_args="-G Ninja -DBUILD_WITH_QT6=ON -DBUILD_TRANSLATIONS=OFF -DLIBSECRET_SUPPORT=ON -DBUILD_TESTING=OFF"
+
+post_install() {
+    blicense COPYING
+}

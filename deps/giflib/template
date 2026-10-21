@@ -1,0 +1,19 @@
+pkg_name=giflib
+version=5.2.2
+revision=1
+build_style=custom
+short_desc="Library for reading and writing GIF images (used by leptonica)"
+home_page="https://giflib.sourceforge.net"
+license="MIT"
+dist_files="https://downloads.sourceforge.net/sourceforge/giflib/giflib-${version}.tar.gz"
+checksum=""
+
+do_build() {
+    $make_cmd $make_jobs CC="$CC" CFLAGS="$CFLAGS -fPIC" LDFLAGS="$LDFLAGS" libgif.so libutil.so
+}
+
+do_install() {
+    $make_cmd DESTDIR="$DESTDIR" PREFIX=/usr install-include install-lib
+    brm /usr/lib/libgif.a
+    blicense COPYING
+}

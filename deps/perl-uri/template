@@ -1,0 +1,17 @@
+pkg_name=perl-uri
+version=5.40
+revision=1
+build_style=perl-module
+short_desc="URI::Escape and friends (kdoctools needs it to build)"
+home_page="https://metacpan.org/release/URI"
+license="Artistic-1.0-Perl, GPL-1.0-or-later"
+dist_files="https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-${version}.tar.gz"
+checksum=""
+wrk_src="URI-$version"
+
+depends="perl"
+make_depends="perl"
+
+post_install() {
+    blicense LICENSE
+}

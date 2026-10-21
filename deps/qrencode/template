@@ -1,0 +1,16 @@
+pkg_name=qrencode
+version=4.1.1
+revision=1
+build_style=cmake
+short_desc="QR code encoding library (used by prison)"
+home_page="https://fukuchi.org/works/qrencode"
+license="LGPL-2.1-or-later"
+dist_files="https://github.com/fukuchi/libqrencode/archive/refs/tags/v${version}.tar.gz>qrencode-${version}.tar.gz"
+checksum=""
+
+make_depends="cmake samurai pkgconf"
+configure_args="-G Ninja -DBUILD_SHARED_LIBS=ON -DWITH_TOOLS=NO -DWITH_TESTS=NO"
+
+post_install() {
+    blicense COPYING
+}

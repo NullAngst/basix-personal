@@ -1,0 +1,51 @@
+pkg_name=polkit
+version=127
+revision=1
+build_style=meson
+short_desc="Toolkit for authorizing privileged actions (duktape engine, elogind tracking)"
+home_page="https://github.com/polkit-org/polkit"
+license="LGPL-2.0-or-later"
+dist_files="https://github.com/polkit-org/polkit/archive/refs/tags/${version}.tar.gz>polkit-${version}.tar.gz"
+checksum=""
+wrk_src="polkit-$version"
+
+use_flags="man services"
+
+system_accounts="polkitd"
+polkitd_descr="polkit daemon"
+polkitd_homedir="/var/lib/polkit-1"
+
+depends="dbus duktape elogind expat glib linux-pam"
+make_depends="dbus duktape elogind expat glib linux-pam meson perl pkgconf gettext-tiny
+ $(use_if man "docbook-xsl libxslt")"
+
+configure_args="
+    -Dsession_tracking=elogind
+    -Djs_engine=duktape
+    -Dauthfw=pam
+    -Dpolkitd_user=polkitd
+    -Dprivileged_group=wheel
+    -Dintrospection=false
+    -Dexamples=false
+    -Dgtk_doc=false
+    -Dtests=false
+    $(use_if man -Dman=true -Dman=false)"
+
+pre_configure() {
+    export XML_CATALOG_FILES=/usr/share/xsl/docbook/catalog.xml
+}
+
+post_install() {
+    # what polkit's own build asks for
+    chmod 4755 "$DESTDIR/usr/lib/polkit-1/polkit-agent-helper-1"
+    chmod 4755 "$DESTDIR/usr/bin/pkexec"
+    # authenticate through the Basix PAM stack instead of upstream's system-auth
+    binstall "$FILESDIR/polkit-1.pam" 0644 /etc/pam.d polkit-1
+    bmkdir -m 0700 /var/lib/polkit-1
+
+    if use services; then
+        bcopy "$FILESDIR/sources/." /usr/share/s6-rc/sources
+        find "$DESTDIR/usr/share/s6-rc/sources" -type f -name run -exec chmod 0755 {} +
+    fi
+    blicense COPYING
+}
