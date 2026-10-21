@@ -1,0 +1,31 @@
+pkg_name=libxkbcommon
+version=1.13.2
+revision=1
+build_style=meson
+short_desc="Library to handle keyboard descriptions (with X11 and xkbregistry)"
+home_page="https://xkbcommon.org"
+license="MIT"
+dist_files="https://github.com/xkbcommon/libxkbcommon/archive/xkbcommon-${version}.tar.gz>libxkbcommon-${version}.tar.gz"
+checksum="b6b869719334d160764d2fc3f1dd134dd903b3ea1b0605cd05e6e36917311a54"
+wrk_src="libxkbcommon-xkbcommon-$version"
+
+# Shadows core's libxkbcommon (this repo is listed above core). Core hardcodes
+# -Denable-x11=false and lacks libxml2 in make_depends for xkbregistry, which
+# Qt's xcb plugin, KWin's XWayland support and plasma-desktop need. Same
+# upstream file and checksum as core; drop this copy once core covers both.
+use_flags="tools x11 xkbregistry"
+
+depends="xkeyboard-config $(use_if x11 libxcb) $(use_if xkbregistry libxml2)"
+make_depends="bison meson pkgconf python xkeyboard-config
+ $(use_if x11 "libxcb xorgproto") $(use_if xkbregistry libxml2)"
+
+configure_args="
+    -Denable-docs=false
+    -Denable-wayland=false
+    $(use_bool x11 enable-x11)
+    $(use_bool xkbregistry enable-xkbregistry)
+    $(use_bool tools enable-tools)"
+
+post_install() {
+    blicense LICENSE
+}

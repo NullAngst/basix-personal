@@ -1,0 +1,15 @@
+pkg_name=iso-codes
+version=4.20.1
+revision=1
+build_style=meson
+short_desc="ISO country, language and currency lists (KI18n's KCountry)"
+home_page="https://salsa.debian.org/iso-codes-team/iso-codes"
+license="LGPL-2.1-or-later"
+dist_files="https://deb.debian.org/debian/pool/main/i/iso-codes/iso-codes_${version}.orig.tar.xz"
+checksum="91ed752460d82e43c07bf35034ffe765affe8377702f421099e1bc14b3ee0b3f"
+
+make_depends="meson python gettext-tiny"
+
+post_install() {
+    blicense COPYING
+}

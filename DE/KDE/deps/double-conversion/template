@@ -1,0 +1,16 @@
+pkg_name=double-conversion
+version=3.4.0
+revision=1
+build_style=cmake
+short_desc="Efficient binary-decimal and decimal-binary conversion for IEEE doubles"
+home_page="https://github.com/google/double-conversion"
+license="BSD-3-Clause"
+dist_files="https://github.com/google/double-conversion/archive/v${version}.tar.gz>double-conversion-${version}.tar.gz"
+checksum="f30a57f6c7e3d0a8250a13657587d847bfb45f7744039580634eb77f6de189c4"
+
+make_depends="cmake samurai"
+configure_args="-G Ninja -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF"
+
+post_install() {
+    blicense LICENSE
+}

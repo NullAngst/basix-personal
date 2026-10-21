@@ -1,0 +1,19 @@
+pkg_name=libical
+version=3.0.20
+revision=1
+build_style=cmake
+short_desc="iCalendar protocols and data formats library (used by kcalendarcore)"
+home_page="https://libical.github.io/libical"
+license="LGPL-2.1-only, MPL-2.0"
+dist_files="https://github.com/libical/libical/releases/download/v${version}/libical-${version}.tar.gz"
+checksum="1d795e4a52b1a988be27dd3839784112b06deff42ac591719049410740eb9c99"
+
+# the 3.x series: kcalendarcore 6.x is written against it
+depends="icu"
+make_depends="cmake samurai pkgconf perl icu"
+configure_args="-G Ninja -DSHARED_ONLY=true -DICAL_GLIB=false -DGOBJECT_INTROSPECTION=false
+ -DICAL_BUILD_DOCS=false -DENABLE_GTK_DOC=false -DLIBICAL_BUILD_TESTING=false -DUSE_BUILTIN_TZDATA=false"
+
+post_install() {
+    blicense LICENSE
+}

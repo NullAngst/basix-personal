@@ -1,0 +1,29 @@
+pkg_name=eudev
+version=3.2.14
+revision=1
+build_style=gnu-configure
+short_desc="udev without systemd (fallback libudev if libudev-zero is not enough for KWin)"
+home_page="https://github.com/eudev-project/eudev"
+license="GPL-2.0-or-later"
+dist_files="https://github.com/eudev-project/eudev/releases/download/v${version}/eudev-${version}.tar.gz"
+checksum="093ed8eecbeda7d4af31e05fbbf8b5ef5e6fb2ce06e3fd7948a26c09a1e57c4b"
+
+# Not pulled in by anything in this repo. Installing it next to libudev-zero
+# makes libudev.so an alternative: bpm a eudev /usr/lib/libudev.so.1 swaps it.
+# Only the library is wanted; mdevd stays the device manager.
+use_flags="-man"
+
+depends="util-linux"
+make_depends="gperf linux-headers pkgconf util-linux"
+
+configure_args="
+    --disable-static
+    --disable-kmod
+    --disable-selinux
+    --disable-introspection
+    --disable-blkid
+    $(use_enable man manpages)"
+
+post_install() {
+    blicense COPYING
+}

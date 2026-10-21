@@ -1,0 +1,30 @@
+pkg_name=libcanberra
+version=0.30
+revision=1
+build_style=gnu-configure
+short_desc="Event sound library (KWin, KNotifications, plasma-pa)"
+home_page="https://0pointer.de/lennart/projects/libcanberra"
+license="LGPL-2.1-or-later"
+dist_files="https://0pointer.de/lennart/projects/libcanberra/libcanberra-${version}.tar.xz"
+checksum="ea02f4b5a00bfffce1d29ce73e1cf5351027208cbeb58bf9954e84ad120e6daa"
+
+depends="alsa-lib libogg libtool libvorbis pulseaudio"
+make_depends="alsa-lib libogg libtool libvorbis pkgconf pulseaudio"
+
+configure_args="
+    --disable-static
+    --disable-oss
+    --disable-gstreamer
+    --disable-gtk
+    --disable-gtk3
+    --disable-tdb
+    --disable-udev
+    --disable-lynx
+    --enable-alsa
+    --enable-pulse
+    --enable-null"
+
+post_install() {
+    brm /usr/share/doc
+    blicense LGPL
+}
