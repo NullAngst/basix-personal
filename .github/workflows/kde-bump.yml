@@ -64,8 +64,24 @@ jobs:
           REPO: ${{ github.repository }}
           BASE: ${{ github.event.repository.default_branch }}
         run: |
-          api=https://api.github.com/repos/$REPO
-          auth="Authorization: Bearer $GH_TOKEN"
+          # api METHOD PATH [curl args]: prints the body, or GitHub's error and fails
+          api() {
+            resp=$(curl -sS -X "$1" -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" -w '\n%{http_code}' \
+              "https://api.github.com/repos/$REPO$2" "${@:3}")
+            code=${resp##*$'\n'}
+            body=${resp%$'\n'*}
+            if [ "$code" -ge 300 ]; then
+              echo "GitHub API: $1 $2 returned HTTP $code" >&2
+              printf '%s\n' "$body" >&2
+              case $body in *"not permitted to create or approve pull requests"*)
+                echo "Turn on Settings > Actions > General > Workflow permissions >" >&2
+                echo "\"Allow GitHub Actions to create and approve pull requests\", then rerun." >&2 ;;
+              esac
+              return 1
+            fi
+            printf '%s\n' "$body"
+          }
           {
             echo "Weekly run of tools/kde-bump."
             echo
@@ -77,14 +93,13 @@ jobs:
           } >"$RUNNER_TEMP/body.md"
           title="kde: version and checksum bump ($(date -u +%Y-%m-%d))"
           owner=${REPO%%/*}
-          num=$(curl -fsSL -H "$auth" "$api/pulls?state=open&head=$owner:$BRANCH" | jq -r '.[0].number // empty')
+          num=$(api GET "/pulls?state=open&head=$owner:$BRANCH" | jq -r '.[0].number // empty')
           if [ -n "$num" ]; then
             jq -n --arg t "$title" --rawfile b "$RUNNER_TEMP/body.md" '{title: $t, body: $b}' |
-              curl -fsSL -X PATCH -H "$auth" -H "Accept: application/vnd.github+json" "$api/pulls/$num" -d @- >/dev/null
+              api PATCH "/pulls/$num" -d @- >/dev/null
             echo "Updated pull request #$num."
           else
             jq -n --arg t "$title" --rawfile b "$RUNNER_TEMP/body.md" --arg h "$BRANCH" --arg base "$BASE" \
               '{title: $t, body: $b, head: $h, base: $base}' |
-              curl -fsSL -X POST -H "$auth" -H "Accept: application/vnd.github+json" "$api/pulls" -d @- |
-              jq -r '"Opened pull request #\(.number)."'
+              api POST "/pulls" -d @- | jq -r '"Opened pull request #\(.number)."'
           fi
