@@ -53,11 +53,12 @@ say() { printf '%s\n' "$*" >&2; }
 
 # ---- version helpers -------------------------------------------------------
 
-# newest plain release (digits and dots only) from stdin, optionally with the
-# given first component
+# newest plain release from stdin, optionally with the given first component.
+# A release has at least one dot: index pages also link bare numbers (mirror
+# ids, sizes), and one of those once came back as Gear "29561".
 vmax() {
     awk -v major="${1:-}" '
-    $0 ~ /^[0-9]+(\.[0-9]+)*$/ {
+    $0 ~ /^[0-9]+(\.[0-9]+)+$/ {
         if (major != "" && $0 !~ ("^" major "\\.")) next
         n = split($0, a, "."); better = 0
         if (best == "") better = 1
@@ -80,6 +81,11 @@ links() {
 index_dirs() { links "$1" | grep '/$' | sed 's|/$||; s|.*/||'; }
 index_files() { # INDEX NAME -> versions of NAME-VERSION.tar.xz
     links "$1" | sed 's|.*/||' | sed -n "s/^$2-\\(.*\\)\\.tar\\.xz\$/\\1/p"
+}
+
+# 0 when $1 is a newer release than $2
+vnewer() {
+    [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | vmax)" = "$1" ]
 }
 
 newest_kde_flat() { index_files "$1" "$2" | vmax; }
@@ -184,8 +190,9 @@ while read -r sname sver; do
         if o=$(override_for "$sname"); then new=$o
         else
             found=$(newest_set "$sname" "$sver" || true)
-            if [ -n "$found" ]; then new=$found
-            else say "kde-bump: could not read the $sname index, keeping $sver"; note='index unreadable, '; fi
+            if [ -z "$found" ]; then say "kde-bump: could not read the $sname index, keeping $sver"; note='index unreadable, '
+            elif vnewer "$found" "$sver"; then new=$found
+            elif [ "$found" != "$sver" ]; then say "kde-bump: the $sname index offers $found, older than $sver, keeping $sver"; fi
         fi
     fi
     # every package of the set is fetched when the version moves, otherwise
@@ -239,8 +246,9 @@ while IFS='|' read -r p pset src ver url watch sum; do
                 github) found=$(newest_github "$2" || true) ;;
                 *) say "kde-bump: $p has no usable watch line" ;;
             esac
-            [ -n "$found" ] && new=$found
-            [ -z "$found" ] && [ -n "${1:-}" ] && say "kde-bump: no release found for $p, keeping $ver"
+            if [ -n "$found" ] && vnewer "$found" "$ver"; then new=$found
+            elif [ -n "$found" ] && [ "$found" != "$ver" ]; then say "kde-bump: $p offers $found, older than $ver, keeping $ver"
+            elif [ -z "$found" ] && [ -n "${1:-}" ]; then say "kde-bump: no release found for $p, keeping $ver"; fi
         fi
     fi
     if [ "$new" = "$ver" ] && [ -n "$sum" ]; then row "$p" "$ver" "$ver" "current"; continue; fi
