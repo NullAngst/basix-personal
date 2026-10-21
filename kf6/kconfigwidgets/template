@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Widgets for KConfig"
 home_page="https://invent.kde.org/frameworks/kconfigwidgets"
-license="LGPL-2.1-only, LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kconfigwidgets-${version}.tar.xz"
-checksum=""
+checksum="e6c68da5c614db04615734f7c9fcdc35eaebb8e8a02ea333efb4f847ea568ead"
 
 use_flags="man -doc -nls"
 depends="kauth kcodecs kcolorscheme kconfig kcoreaddons kguiaddons

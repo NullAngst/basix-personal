@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A Qt style supporting both QtQuick and QtWidgets"
 home_page="https://invent.kde.org/plasma/union"
-license="LGPL-2.1-only, LGPL-3.0-only, LicenseRef-KDE-Accepted-LGPL"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/union-${version}.tar.xz"
-checksum=""
+checksum="ac5d53391f4365073d3a414eef9e0733c2997bc6a64c4ffac504859aa9554d05"
 
 use_flags="-nls"
 depends="breeze cxx-rust-cssparser karchive kcolorscheme kconfig

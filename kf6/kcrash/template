@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support for application crash analysis and bug report from apps"
 home_page="https://invent.kde.org/frameworks/kcrash"
-license="LGPL-2.1-or-later"
+license="BSD-2-Clause, CC0-1.0, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcrash-${version}.tar.xz"
-checksum=""
+checksum="f890e60f8f1ddbacd6936fc43ee52968766dfe4ba8f09d297160e1b5fa2d83e4"
 
 use_flags="x11 -nls"
 depends="kcoreaddons kwindowsystem libX11 qt6-base"

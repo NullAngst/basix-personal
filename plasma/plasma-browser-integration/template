@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Components necessary to integrate browsers into the Plasma Desktop"
 home_page="https://invent.kde.org/plasma/plasma-browser-integration"
-license="GPL-3.0-or-later"
+license="CC0-1.0, GPL-2.0-or-later, GPL-3.0-or-later, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-browser-integration-${version}.tar.xz"
-checksum=""
+checksum="644d9ebf8fc96ff3db689821cde99abbf22c6d008486f0a347c70c869e3257e3"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kfilemetadata ki18n kio

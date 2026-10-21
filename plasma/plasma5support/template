@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support components for porting from KF5/Qt5 to KF6/Qt6"
 home_page="https://invent.kde.org/plasma/plasma5support"
-license="GPL-2.0-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma5support-${version}.tar.xz"
-checksum=""
+checksum="c7fb789d449896b9fcc37855e1936c5eb8f687df454520c235e4b66ab6acff2b"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kguiaddons kholidays ki18n kidletime kio

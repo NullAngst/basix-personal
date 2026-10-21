@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Simple image editor for QtQuick applications"
 home_page="https://invent.kde.org/libraries/kquickimageeditor"
-license="BSD-2-Clause, LGPL-2.1-or-later"
+license="BSD-2-Clause, CC0-1.0, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/kquickimageeditor/kquickimageeditor-${version}.tar.xz"
-checksum=""
+checksum="547f9c61e3a0827c54003a0c862d828b10868016b2792559d2b64fa45682fe4c"
 
 use_flags="-nls"
 depends="highway kconfig qt6-base qt6-declarative"

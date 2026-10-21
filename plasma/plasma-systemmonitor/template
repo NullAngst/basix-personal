@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="An application for monitoring system resources"
 home_page="https://invent.kde.org/plasma/plasma-systemmonitor"
-license="LicenseRef-KDE-Accepted-GPL, LicenseRef-KDE-Accepted-LGPL, CC0-1.0"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, LGPL-3.0-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-systemmonitor-${version}.tar.xz"
-checksum=""
+checksum="ca648fb6456ac0fc8a4a36c8bffb6cb26fb7cfe869f91b805cf08cde93a7cd18"
 
 use_flags="-nls"
 depends="kconfig kcrash kdbusaddons kdeclarative kglobalaccel ki18n kio

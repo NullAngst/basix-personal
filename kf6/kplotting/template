@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Lightweight plotting framework"
 home_page="https://invent.kde.org/frameworks/kplotting"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kplotting-${version}.tar.xz"
-checksum=""
+checksum="3b27f83aad0e7ad2238a91e3bce0ccc58c49ff3d891dd7f7fcd02a97e08080b9"
 
 use_flags="-nls"
 depends="qt6-base"

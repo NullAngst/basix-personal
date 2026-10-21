@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A GTK Theme Built to Match KDE's Breeze"
 home_page="https://invent.kde.org/plasma/breeze-gtk"
-license="LGPL-2.1-only"
+license="BSD-3-Clause, CC0-1.0"
 dist_files="https://download.kde.org/stable/plasma/${version}/breeze-gtk-${version}.tar.xz"
-checksum=""
+checksum="765a55fa9022cf9b8dd3f7747cad5e4c5a1880c1dfa6ea18c4fd7c3406cc7032"
 
 use_flags="-nls"
 depends="breeze"

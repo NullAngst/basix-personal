@@ -6,7 +6,7 @@ short_desc="X Rendering Extension client library"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxrender"
 license="MIT"
 dist_files="https://www.x.org/releases/individual/lib/libXrender-${version}.tar.xz"
-checksum=""
+checksum="900b431ad77835029a88fd0d874bbd0d748ff150b9e0c3841b3ce7a346cf396a"
 depends="libX11"
 make_depends="libX11 pkgconf util-macros xorgproto"
 

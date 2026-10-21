@@ -6,7 +6,7 @@ short_desc="XCB port of Xlib's XImage and XShmImage"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxcb-util-image"
 license="MIT"
 dist_files="https://xcb.freedesktop.org/dist/xcb-util-image-${version}.tar.xz"
-checksum=""
+checksum="c8a0652f7c215bd312d9f238aed2ba6a122f087b623dafbbac4456f5351df603"
 depends="libxcb xcb-util"
 make_depends="libxcb xcb-util pkgconf util-macros xorgproto m4"
 

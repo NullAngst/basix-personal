@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support for bookmarks and the XBEL format"
 home_page="https://invent.kde.org/frameworks/kbookmarks"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kbookmarks-${version}.tar.xz"
-checksum=""
+checksum="21307b3ddb95551b1319a445d730d9559f67b93ff837bd2cd575940979c48d9f"
 
 use_flags="-nls"
 depends="kcodecs kconfig kconfigwidgets kcoreaddons kwidgetsaddons

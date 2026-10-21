@@ -6,7 +6,7 @@ short_desc="XCB cursor library, a port of libXcursor"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxcb-util-cursor"
 license="MIT"
 dist_files="https://xcb.freedesktop.org/dist/xcb-util-cursor-${version}.tar.xz"
-checksum=""
+checksum="f46b389539d43658fcf10511fae4ef9a4d40856058681e257bdb3b275a127e35"
 depends="libxcb xcb-util-image xcb-util-renderutil"
 make_depends="libxcb xcb-util-image xcb-util-renderutil pkgconf util-macros xorgproto m4"
 

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Framework that lets applications manage user installable packages of non-binary assets"
 home_page="https://invent.kde.org/frameworks/kpackage"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kpackage-${version}.tar.xz"
-checksum=""
+checksum="208c27e6315a13d7d29ee1c435aaaaf478ce2fd91b4bfc354eaf3ff9103de9ac"
 
 use_flags="man -doc -nls"
 depends="karchive kcoreaddons ki18n qt6-base"

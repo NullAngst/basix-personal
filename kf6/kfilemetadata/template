@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A library for extracting file metadata"
 home_page="https://invent.kde.org/frameworks/kfilemetadata"
-license="LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kfilemetadata-${version}.tar.xz"
-checksum=""
+checksum="76861a80d9584f26632fd99659198e896f2be291350f529348e1563a93335736"
 
 use_flags="-nls"
 depends="attr ffmpeg karchive kcodecs kconfig kcoreaddons ki18n

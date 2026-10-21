@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Syntax highlighting engine for structured text and code"
 home_page="https://invent.kde.org/frameworks/syntax-highlighting"
-license="MIT"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-or-later, LGPL-2.0-or-later, LGPL-2.1-or-later, MIT"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/syntax-highlighting-${version}.tar.xz"
-checksum=""
+checksum="05d983bb84b13eea3eb6280d641c15066557600506977f36a8f93ae72dd5952c"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative"

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Tools based on KDE Frameworks 5 to better interact with the system"
 home_page="https://invent.kde.org/plasma/kde-cli-tools"
-license="GPL-2.0-only, GPL-3.0-only, GPL-2.0-or-later, LGPL-2.1-only"
+license="Artistic-2.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/kde-cli-tools-${version}.tar.xz"
-checksum=""
+checksum="cb1ba7a1dffbb80db46fabaefd11188393570e60aba96176465ff3b2b6fefc84"
 
 use_flags="x11 man -doc -nls"
 depends="kcmutils kconfig kcoreaddons kdeclarative kdesu ki18n

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Manages the power consumption settings of a Plasma Shell"
 home_page="https://invent.kde.org/plasma/powerdevil"
-license="GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/powerdevil-${version}.tar.xz"
-checksum=""
+checksum="2e4026a1f8a12c95046b8fbf25c2cc67000c59a0e682e097d286bda59c29a2c4"
 
 use_flags="man -doc -nls"
 depends="kauth kcmutils kconfig kcrash kdbusaddons kglobalaccel ki18n

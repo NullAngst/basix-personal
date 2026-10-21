@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Addons to QtCore"
 home_page="https://invent.kde.org/frameworks/kcoreaddons"
-license="LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MPL-1.1, Qt-LGPL-exception-1.1"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcoreaddons-${version}.tar.xz"
-checksum=""
+checksum="09089e70b248c5002104ead674d89fd9f3ffa5eb1cd750e17a4acbcdf54965f7"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative util-linux breeze-icons

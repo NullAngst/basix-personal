@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Document centric plugin system"
 home_page="https://invent.kde.org/frameworks/kparts"
-license="LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
+license="CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kparts-${version}.tar.xz"
-checksum=""
+checksum="cf83dc3619fcbd5888b8c1b081611f6e1a640dd73a82c52c0d17fd02fa7900c2"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons ki18n kiconthemes kio kjobwidgets kservice

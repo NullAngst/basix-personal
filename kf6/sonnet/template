@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Spelling framework for Qt"
 home_page="https://invent.kde.org/frameworks/sonnet"
-license="LGPL-2.1-only"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/sonnet-${version}.tar.xz"
-checksum=""
+checksum="ab441e4ae9e12688eba80f84bfe4dd17b72d8e8cd2b80073f857b8650ad30b04"
 
 use_flags="-nls"
 depends="qt6-base qt6-declarative zlib"

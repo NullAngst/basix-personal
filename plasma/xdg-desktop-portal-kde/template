@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A backend implementation for xdg-desktop-portal that is using Qt/KDE"
 home_page="https://invent.kde.org/plasma/xdg-desktop-portal-kde"
-license="LGPL-2.0-or-later"
+license="BSD-2-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/xdg-desktop-portal-kde-${version}.tar.xz"
-checksum=""
+checksum="714df6c4c0a977746ae6a6bf28c0d78e96663fae9b6406c6fb70d6a8275cf728"
 
 use_flags="-nls"
 depends="glib kconfig kcoreaddons kcrash kdeclarative kglobalaccel

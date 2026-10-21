@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="All kind of addons to improve your Plasma experience"
 home_page="https://invent.kde.org/plasma/kdeplasma-addons"
-license="LGPL-2.0-only, GPL-2.0-or-later"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, LGPL-3.0-or-later, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/kdeplasma-addons-${version}.tar.xz"
-checksum=""
+checksum="68261095ffa04876e9b1e81a9100fd9eded99b15bbd0728b20c489fbbf6eef55"
 
 # Rust crates are fetched at build time
 allow_network=yes

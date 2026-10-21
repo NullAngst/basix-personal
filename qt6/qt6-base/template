@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A cross-platform application and UI framework"
 home_page="https://www.qt.io"
-license="LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0"
+license="AFL-2.1, Apache-2.0, BSD-2-Clause, BSD-3-Clause, BSD-4-Clause, BSL-1.0, Bitstream-Vera, CC0-1.0, FTL, GFDL-1.3-no-invariants-only, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, HPND, IJG, IPL-1.0, Imlib2, LGPL-2.1-or-later, LGPL-3.0-only, Libpng, Linux-syscall-note, MIT, MIT-Khronos-old, MIT-open-group, MPL-2.0, Qt-GPL-exception-1.0, SPL-1.0, Unicode-3.0, X11, Xerox, Zlib, blessing, libpng-2.0"
 dist_files="https://download.qt.io/official_releases/qt/${version%.*}/${version}/submodules/qtbase-everywhere-src-${version}.tar.xz"
-checksum=""
+checksum="291b9514be8a92f34aec8988d6e912413628d96ad7da7551a8f33bb1d7a985c8"
 wrk_src="qtbase-everywhere-src-$version"
 
 use_flags="x11"

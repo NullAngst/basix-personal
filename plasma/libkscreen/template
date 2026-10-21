@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE screen management software"
 home_page="https://invent.kde.org/plasma/libkscreen"
-license="LGPL-2.1-or-later, GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/libkscreen-${version}.tar.xz"
-checksum=""
+checksum="94d5efa094f0705475b8fd8211febc9c6c9f218cdf4d76f53329b172722796eb"
 
 use_flags="-nls"
 depends="kconfig kwayland qt6-base wayland"

@@ -6,7 +6,7 @@ short_desc="Lightning memory-mapped key-value database (used by baloo)"
 home_page="https://www.symas.com/lmdb"
 license="OLDAP-2.8"
 dist_files="https://git.openldap.org/openldap/openldap/-/archive/LMDB_${version}/openldap-LMDB_${version}.tar.gz"
-checksum=""
+checksum="3c7469d72a12b7cc609a5ee7a14fa2fa066cae8d25d45f3e927e159055cda90c"
 wrk_src="openldap-LMDB_$version/libraries/liblmdb"
 
 do_build() {

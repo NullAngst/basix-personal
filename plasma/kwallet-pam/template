@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KWallet PAM integration"
 home_page="https://invent.kde.org/plasma/kwallet-pam"
-license="LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/plasma/${version}/kwallet-pam-${version}.tar.xz"
-checksum=""
+checksum="8674cd8f113a4c4eac211c8836ab4804c0c1790da9fa7088d6df04d0289c33d2"
 
 use_flags="-nls"
 depends="kwallet libgcrypt linux-pam socat"

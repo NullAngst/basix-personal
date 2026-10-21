@@ -6,7 +6,7 @@ short_desc="XCB utility library (atoms, aux, event)"
 home_page="https://gitlab.freedesktop.org/xorg/lib/libxcb-util"
 license="MIT"
 dist_files="https://xcb.freedesktop.org/dist/xcb-util-${version}.tar.xz"
-checksum=""
+checksum="ebc940220db0ca39a690a47b565ce73ab536c1fbfdebf008fa0edf0ced862aca"
 depends="libxcb"
 make_depends="libxcb pkgconf util-macros xorgproto m4"
 

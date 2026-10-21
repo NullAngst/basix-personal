@@ -8,7 +8,7 @@ short_desc="Breeze icon themes"
 home_page="https://invent.kde.org/frameworks/breeze-icons"
 license="LGPL-3.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/breeze-icons-${version}.tar.xz"
-checksum=""
+checksum="0d8019f64c168042a21c57a45b841db9f63fb9028fd542be7fd3b39a0ef8dea3"
 
 use_flags="-nls"
 depends="qt6-base"

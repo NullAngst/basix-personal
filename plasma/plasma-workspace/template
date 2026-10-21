@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE Plasma Workspace"
 home_page="https://invent.kde.org/plasma/plasma-workspace"
-license="GPL-2.0-only, GPL-3.0-only, LGPL-2.1-or-later, GPL-2.0-or-later, MIT, LGPL-2.1-only, LGPL-2.0-or-later, LGPL-3.0-only, LGPL-2.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, ISC, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, LGPL-3.0-or-later, MIT"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-workspace-${version}.tar.xz"
-checksum=""
+checksum="09eccba388eed3668e475f1c727e151a871af772600983deaf477a9301d38547"
 
 use_flags="x11 man -doc -nls"
 depends="baloo breeze dbus icu karchive kauth kcmutils kcolorscheme

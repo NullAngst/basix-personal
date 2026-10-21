@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Daemon providing Global Keyboard Shortcut (Accelerator) functionality"
 home_page="https://invent.kde.org/plasma/kglobalacceld"
-license="LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/kglobalacceld-${version}.tar.xz"
-checksum=""
+checksum="19642308b4a7e3d40a04c1f3466424fd31adf79be0f4335db65431673f36bc2c"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kcrash kdbusaddons kglobalaccel kio

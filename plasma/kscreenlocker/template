@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Library and components for secure lock screen architecture"
 home_page="https://invent.kde.org/plasma/kscreenlocker"
-license="GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/kscreenlocker-${version}.tar.xz"
-checksum=""
+checksum="7fc93d08ea1bbd59431f53d897ad5b0bcdff30ea072eae9b26fcdccc7ba8b171"
 
 use_flags="-nls"
 depends="elogind kcmutils kcrash kdeclarative kglobalaccel ki18n

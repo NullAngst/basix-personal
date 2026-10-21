@@ -6,7 +6,7 @@ short_desc="Event sound library (KWin, KNotifications, plasma-pa)"
 home_page="https://0pointer.de/lennart/projects/libcanberra"
 license="LGPL-2.1-or-later"
 dist_files="https://0pointer.de/lennart/projects/libcanberra/libcanberra-${version}.tar.xz"
-checksum=""
+checksum="ea02f4b5a00bfffce1d29ce73e1cf5351027208cbeb58bf9954e84ad120e6daa"
 
 depends="alsa-lib libogg libtool libvorbis pulseaudio"
 make_depends="alsa-lib libogg libtool libvorbis pkgconf pulseaudio"

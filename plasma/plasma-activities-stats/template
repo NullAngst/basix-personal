@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="A library for accessing the usage data collected by the activities system"
 home_page="https://invent.kde.org/plasma/plasma-activities-stats"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/plasma-activities-stats-${version}.tar.xz"
-checksum=""
+checksum="eb74fa3ba8724900fc295e5ac86eae13140edae5dccdf31bf0a85ba5f6fa69cf"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons plasma-activities qt6-base

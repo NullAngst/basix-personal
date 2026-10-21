@@ -6,7 +6,7 @@ short_desc="Fallback icon theme every other theme inherits from"
 home_page="https://www.freedesktop.org/wiki/Software/icon-theme"
 license="GPL-2.0-only"
 dist_files="https://icon-theme.freedesktop.org/releases/hicolor-icon-theme-${version}.tar.xz"
-checksum=""
+checksum="062e251872a23ecf47a127293ae9abf98a1c912f82f819d0cebccf8d9415deb2"
 
 make_depends="meson"
 

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Classes to read and interact with KColorScheme"
 home_page="https://invent.kde.org/frameworks/kcolorscheme"
-license="LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later"
+license="BSD-2-Clause, CC-BY-SA-4.0, CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcolorscheme-${version}.tar.xz"
-checksum=""
+checksum="5cfe3954ae63b5c17ac42f175ff8d3fa165806bb13634fcb8fb399ff0fe350ee"
 
 use_flags="-nls"
 depends="kconfig kguiaddons ki18n qt6-base"

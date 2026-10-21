@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Support for unit conversion"
 home_page="https://invent.kde.org/frameworks/kunitconversion"
-license="LGPL-2.1-or-later"
+license="CC0-1.0, LGPL-2.0-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kunitconversion-${version}.tar.xz"
-checksum=""
+checksum="45eff499567b46a921f2e7d7b863b89700c752e5f2cfd5e966013f66e8249385"
 
 use_flags="-nls"
 depends="ki18n qt6-base"

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Documentation generation from docbook"
 home_page="https://invent.kde.org/frameworks/kdoctools"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-3-Clause, CC0-1.0, GPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kdoctools-${version}.tar.xz"
-checksum=""
+checksum="8b89cbe5e82a71eb75310bea1f7b529e1abef0df02cc4add7c3662603e1aa704"
 
 use_flags="-nls"
 depends="karchive ki18n libxml2 libxslt qt6-base docbook-xml

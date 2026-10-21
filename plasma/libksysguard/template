@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="KDE system monitor library"
 home_page="https://invent.kde.org/plasma/libksysguard"
-license="LGPL-2.1-or-later, GPL-2.0-only, GPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/plasma/${version}/libksysguard-${version}.tar.xz"
-checksum=""
+checksum="abeb5424c0fc1b863ec07a1d58cbaf04e0ff485d9b3cfed7d0a53eb6c8c507a4"
 
 use_flags="-nls"
 depends="kauth kcompletion kconfig kconfigwidgets kcoreaddons

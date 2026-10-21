@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Addons to QtDBus"
 home_page="https://invent.kde.org/frameworks/kdbusaddons"
-license="LGPL-2.1-only, LGPL-3.0-only"
+license="CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kdbusaddons-${version}.tar.xz"
-checksum=""
+checksum="0b4a2dd1993f8635610931e8a9cb83d320660893596fc8771e4ff8fd59133098"
 
 use_flags="x11 -nls"
 depends="qt6-base qt6-declarative shared-mime-info"

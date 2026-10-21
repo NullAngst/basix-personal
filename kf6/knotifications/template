@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Abstraction for system notifications"
 home_page="https://invent.kde.org/frameworks/knotifications"
-license="BSD-3-Clause, LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-only, LGPL-3.0-only"
+license="BSD-2-Clause, BSD-3-Clause, CC0-1.0, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/knotifications-${version}.tar.xz"
-checksum=""
+checksum="0cc1521432b2e8c1a071c0ef3f7301a11a4411eca05eba53f0ad300f8f924894"
 
 use_flags="-nls"
 depends="kconfig kcoreaddons kwindowsystem libcanberra qt6-base

@@ -6,9 +6,9 @@ revision=1
 build_style=cmake
 short_desc="Text completion helpers and widgets"
 home_page="https://invent.kde.org/frameworks/kcompletion"
-license="LGPL-2.1-or-later"
+license="BSD-3-Clause, CC0-1.0, LGPL-2.0-or-later, LGPL-2.1-or-later"
 dist_files="https://download.kde.org/stable/frameworks/${version%.*}/kcompletion-${version}.tar.xz"
-checksum=""
+checksum="05aeeeb7250f261e36b9cdc621a3031cc781e38607618a9d0425f950147a6451"
 
 use_flags="-nls"
 depends="kcodecs kconfig kwidgetsaddons qt6-base"
