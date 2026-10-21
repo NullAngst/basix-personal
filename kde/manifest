@@ -1,0 +1,1725 @@
+# kde/manifest - the single source for every Qt 6 and KDE template in this repo
+#
+# tools/kde-gen writes <cat>/<pkg>/template from this file. tools/kde-bump
+# rewrites the version lines, the checksums and the license lines. Edit here,
+# never in a generated template.
+#
+# Sets. One version per set; kde-bump finds the newest stable release of each.
+#
+#   set NAME VERSION
+#
+# Packages. One block each, ended by "end":
+#
+#   pkg NAME             bpm package name
+#     set SET            frameworks, plasma, gear, qt or standalone
+#     cat DIR            category folder the template goes in
+#     src NAME           tarball base name when it differs from the package name
+#     version V          standalone packages only
+#     url URL            standalone packages only; ${version} stays literal
+#     watch TYPE ARGS    standalone only, how kde-bump finds new versions:
+#                          kde-flat INDEX [NAME]  files NAME-VER.tar.xz in INDEX
+#                          kde-dirs INDEX         directories VER/ in INDEX
+#                          github OWNER/REPO      newest vX.Y.Z tag
+#     home URL           home_page
+#     desc TEXT          short_desc
+#     license LIST       SPDX names, comma separated (kde-bump reads LICENSES/)
+#     depends LIST       runtime and link dependencies (also put in make_depends)
+#     make LIST          build-only dependencies
+#     run LIST           runtime-only dependencies (not put in make_depends)
+#     args ARGS          extra cmake arguments
+#     x11 OPTION         cmake option switched by the x11 use flag (!OPTION = inverted)
+#     docs MODE          no, optional (kdoctools when man or doc is on) or required
+#     network yes        allow_network=yes (Rust crates fetched at build time)
+#     revision N         template revision, reset to 1 by a version bump
+#     checksum B3        blake3 of the tarball, written by kde-bump
+#   end
+#
+# Dependencies were seeded from Alpine's APKBUILDs (musl, known to build),
+# mapped to Basix names, then checked against every CMakeLists.txt of the
+# tagged sources for REQUIRED entries. Patches live in kde/patches/<pkg>/.
+
+set frameworks 6.31.0
+set plasma 6.8.1
+set gear 26.08.2
+set qt 6.12.0
+
+# ---- Qt 6 ------------------------------------------------------------------
+
+pkg qt6-5compat
+  set qt
+  cat qt6
+  src qt5compat
+  home https://www.qt.io
+  desc Module that contains unsupported Qt 5 APIs
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends icu qt6-base
+  make perl
+  checksum
+end
+
+pkg qt6-base
+  set qt
+  cat qt6
+  src qtbase
+  home https://www.qt.io
+  desc A cross-platform application and UI framework
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends at-spi2-core dbus double-conversion md4c fontconfig freetype glib harfbuzz icu libX11 libb2 libinput libjpeg-turbo libpng libressl libudev-zero libxcb libxkbcommon mesa pcre2 sqlite vulkan-loader wayland xcb-util xcb-util-cursor xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm zlib
+  make perl python vulkan-headers
+  args -DINSTALL_BINDIR=lib/qt6/bin -DINSTALL_PUBLICBINDIR=bin -DINSTALL_DOCDIR=share/doc/qt6 -DINSTALL_ARCHDATADIR=lib/qt6 -DINSTALL_DATADIR=share/qt6 -DINSTALL_INCLUDEDIR=include/qt6 -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples -DQT_FEATURE_journald=OFF -DQT_FEATURE_libproxy=OFF -DQT_FEATURE_openssl_linked=ON -DQT_FEATURE_dtls=OFF -DQT_FEATURE_reduce_relocations=OFF -DQT_FEATURE_relocatable=OFF -DQT_FEATURE_system_sqlite=ON -DQT_FEATURE_system_textmarkdownreader=ON -DQT_FEATURE_accessibility=ON -DQT_FEATURE_accessibility_atspi_bridge=ON -DQT_FEATURE_vulkan=ON -DQT_FEATURE_wayland=ON -DQT_FEATURE_libudev=ON -DQT_FEATURE_system_xcb_xinput=ON
+  x11 QT_FEATURE_xcb
+  checksum
+end
+
+pkg qt6-declarative
+  set qt
+  cat qt6
+  src qtdeclarative
+  home https://www.qt.io
+  desc Classes for QML and JavaScript languages
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base qt6-svg
+  make perl qt6-shadertools vulkan-headers
+  checksum
+end
+
+pkg qt6-imageformats
+  set qt
+  cat qt6
+  src qtimageformats
+  home https://www.qt.io
+  desc Plugins for additional image formats: TIFF, MNG, TGA, WBMP, WEBP
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends libwebp qt6-base
+  make perl
+  args -DQT_FEATURE_jasper=OFF -DQT_FEATURE_mng=OFF
+  checksum
+end
+
+pkg qt6-location
+  set qt
+  cat qt6
+  src qtlocation
+  home https://www.qt.io
+  desc Qt6 Location module
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base qt6-declarative qt6-positioning
+  make perl
+  checksum
+end
+
+pkg qt6-multimedia
+  set qt
+  cat qt6
+  src qtmultimedia
+  home https://www.qt.io
+  desc Classes for audio, video, radio and camera functionality
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends ffmpeg libXrandr pulseaudio qt6-base qt6-svg
+  make perl qt6-shadertools
+  args -DQT_FEATURE_ffmpeg=ON -DQT_FEATURE_pulseaudio=ON -DQT_FEATURE_gstreamer=OFF -DQT_FEATURE_alsa=OFF
+  checksum
+end
+
+pkg qt6-positioning
+  set qt
+  cat qt6
+  src qtpositioning
+  home https://www.qt.io
+  desc Provides access to position, satellite and area monitoring classes
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base
+  make perl
+  checksum
+end
+
+pkg qt6-sensors
+  set qt
+  cat qt6
+  src qtsensors
+  home https://www.qt.io
+  desc Provides access to sensor hardware and motion gesture recognition
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base qt6-svg
+  make perl
+  checksum
+end
+
+pkg qt6-shadertools
+  set qt
+  cat qt6
+  src qtshadertools
+  home https://www.qt.io
+  desc Experimental module providing APIs and a host tool to host tool to perform graphics and compute shader conditioning
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base
+  make perl vulkan-headers
+  checksum
+end
+
+pkg qt6-speech
+  set qt
+  cat qt6
+  src qtspeech
+  home https://www.qt.io
+  desc Qt6 text to speech module
+  license LGPL-3.0-only, GPL-2.0-only, GPL-3.0-only
+  depends qt6-base qt6-declarative qt6-multimedia
+  make perl
+  checksum
+end
+
+pkg qt6-svg
+  set qt
+  cat qt6
+  src qtsvg
+  home https://www.qt.io
+  desc Classes for displaying the contents of SVG files
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base
+  make perl vulkan-headers
+  checksum
+end
+
+pkg qt6-tools
+  set qt
+  cat qt6
+  src qttools
+  home https://www.qt.io
+  desc A cross-platform application and UI framework (Development Tools, QtHelp)
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base
+  make perl vulkan-headers
+  args -DQT_FEATURE_clang=OFF -DQT_FEATURE_clangcpp=OFF -DQT_FEATURE_qdoc=OFF
+  checksum
+end
+
+pkg qt6-wayland
+  set qt
+  cat qt6
+  src qtwayland
+  home https://www.qt.io
+  desc Provides APIs for Wayland
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-3.0-only, Qt-GPL-exception-1.0
+  depends qt6-base
+  make perl vulkan-headers
+  checksum
+end
+
+
+# ---- Standalone libraries --------------------------------------------------
+
+pkg cxx-rust-cssparser
+  set standalone
+  cat deps
+  version 1.1.0
+  url https://download.kde.org/stable/cxx-rust-cssparser/cxx-rust-cssparser-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/cxx-rust-cssparser/
+  home https://invent.kde.org/libraries/cxx-rust-cssparser
+  desc Library for parsing CSS using the Rust cssparser crate
+  license LGPL-2.1-only, LGPL-3.0-only, LicenseRef-KDE-Accepted-LGPL
+  depends qt6-base
+  make corrosion rust
+  docs no
+  network yes
+  checksum
+end
+
+pkg kirigami-addons
+  set standalone
+  cat kf6
+  version 1.15.0
+  url https://download.kde.org/stable/kirigami-addons/kirigami-addons-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/kirigami-addons/
+  home https://invent.kde.org/libraries/kirigami-addons
+  desc Add-ons for the Kirigami framework
+  license LGPL-2.0-or-later, GPL-2.0-or-later
+  depends kcolorscheme kglobalaccel kguiaddons ki18n kiconthemes qt6-declarative qt6-multimedia
+  docs no
+  checksum
+end
+
+pkg kquickimageeditor
+  set standalone
+  cat deps
+  version 0.7.0.1
+  url https://download.kde.org/stable/kquickimageeditor/kquickimageeditor-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/kquickimageeditor/
+  home https://invent.kde.org/libraries/kquickimageeditor
+  desc Simple image editor for QtQuick applications
+  license BSD-2-Clause, LGPL-2.1-or-later
+  depends highway kconfig qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg plasma-wayland-protocols
+  set standalone
+  cat plasma
+  version 1.23.0
+  url https://download.kde.org/stable/plasma-wayland-protocols/plasma-wayland-protocols-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/plasma-wayland-protocols/
+  home https://invent.kde.org/libraries/plasma-wayland-protocols
+  desc Plasma Specific Protocols for Wayland
+  license GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg polkit-qt6
+  set standalone
+  cat deps
+  version 0.201.1
+  url https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/polkit-qt-1/ polkit-qt-1
+  home https://invent.kde.org/libraries/polkit-qt-1
+  desc Qt wrapper around polkit-1 client libraries
+  license LGPL-2.1-only
+  depends polkit qt6-base
+  args -DQT_MAJOR_VERSION=6 -DBUILD_TEST=OFF
+  checksum
+end
+
+pkg pulseaudio-qt
+  set standalone
+  cat deps
+  version 1.9.0
+  url https://download.kde.org/stable/pulseaudio-qt/pulseaudio-qt-${version}.tar.xz
+  watch kde-flat https://download.kde.org/stable/pulseaudio-qt/
+  home https://invent.kde.org/libraries/pulseaudio-qt
+  desc Pulseaudio bindings for Qt
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends glib pulseaudio qt6-base qt6-declarative
+  make qt6-tools
+  args -DBUILD_WITH_QT6=ON
+  docs no
+  checksum
+end
+
+pkg qca
+  set standalone
+  cat deps
+  version 2.3.12
+  url https://download.kde.org/stable/qca/${version}/qca-${version}.tar.xz
+  watch kde-dirs https://download.kde.org/stable/qca/
+  home https://invent.kde.org/libraries/qca
+  desc Qt cryptographic architecture
+  license LGPL-2.1-or-later
+  depends libressl qt6-5compat qt6-base
+  args -DBUILD_WITH_QT6=ON -DQCA_SUFFIX=qt6 -DBUILD_PLUGINS=none -DWITH_ossl_PLUGIN=yes -DBUILD_TESTS=OFF -Dqca_CERTSTORE=/etc/ssl/cert.pem -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
+  checksum
+end
+
+pkg qcoro
+  set standalone
+  cat deps
+  version 0.13.0
+  url https://github.com/qcoro/qcoro/archive/v${version}.tar.gz>qcoro-${version}.tar.gz
+  watch github qcoro/qcoro
+  home https://github.com/qcoro/qcoro
+  desc C++ Coroutines for Qt
+  license MIT
+  depends qt6-base qt6-declarative
+  args -DQCORO_WITH_QTWEBSOCKETS=OFF -DQCORO_BUILD_EXAMPLES=OFF -DQCORO_BUILD_TESTING=OFF
+  checksum
+end
+
+
+# ---- KDE Frameworks --------------------------------------------------------
+
+pkg attica
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/attica
+  desc Freedesktop OCS binding for Qt
+  license LGPL-2.0-or-later
+  depends qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg baloo
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/baloo
+  desc A framework for searching and managing metadata
+  license LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only 
+  depends kbookmarks kcompletion kconfig kcoreaddons kcrash kdbusaddons kfilemetadata ki18n kidletime kio kjobwidgets kservice lmdb qt6-base qt6-declarative solid
+  docs no
+  checksum
+end
+
+pkg breeze-icons
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/breeze-icons
+  desc Breeze icon themes
+  license LGPL-3.0-or-later
+  depends qt6-base
+  make python
+  args -DBINARY_ICONS_RESOURCE=ON -DWITH_ICON_GENERATION=OFF
+  docs no
+  checksum
+end
+
+pkg extra-cmake-modules
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/extra-cmake-modules
+  desc Extra CMake modules
+  license BSD-3-Clause
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg frameworkintegration
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/frameworkintegration
+  desc Framework providing components to allow applications to integrate with a KDE Workspace
+  license LGPL-2.1-or-later
+  depends appstream kcolorscheme kconfig kconfigwidgets ki18n kiconthemes knewstuff knotifications kpackage kwidgetsaddons qt6-base
+  docs no
+  checksum
+end
+
+pkg karchive
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/karchive
+  desc Qt addon providing access to numerous types of archives
+  license LGPL-2.0-or-later, LGPL-2.1-or-later
+  depends bzip2 qt6-base xz zlib
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kauth
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kauth
+  desc Abstraction to system policy and authentication features
+  license LGPL-2.1-or-later
+  depends kcoreaddons kwindowsystem polkit-qt6 qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kbookmarks
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kbookmarks
+  desc Support for bookmarks and the XBEL format
+  license LGPL-2.1-or-later
+  depends kcodecs kconfig kconfigwidgets kcoreaddons kwidgetsaddons kxmlgui qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kcalendarcore
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcalendarcore
+  desc The KDE calendar access library
+  license LGPL-2.0-or-later
+  depends libical qt6-base qt6-declarative
+  make python qt6-tools
+  docs no
+  checksum
+end
+
+pkg kcmutils
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcmutils
+  desc Utilities for interacting with KCModules
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends kconfigwidgets kcoreaddons kdeclarative kguiaddons ki18n kiconthemes kio kitemviews kservice kwidgetsaddons kxmlgui qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kcodecs
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcodecs
+  desc Provide a collection of methods to manipulate strings using various encodings
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kcolorscheme
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcolorscheme
+  desc Classes to read and interact with KColorScheme
+  license LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later
+  depends kconfig kguiaddons ki18n qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kcompletion
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcompletion
+  desc Text completion helpers and widgets
+  license LGPL-2.1-or-later
+  depends kcodecs kconfig kwidgetsaddons qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kconfig
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kconfig
+  desc Configuration system
+  license LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later
+  depends qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kconfigwidgets
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kconfigwidgets
+  desc Widgets for KConfig
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends kauth kcodecs kcolorscheme kconfig kcoreaddons kguiaddons ki18n kwidgetsaddons qt6-base
+  make qt6-tools
+  docs optional
+  checksum
+end
+
+pkg kcoreaddons
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcoreaddons
+  desc Addons to QtCore
+  license LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only
+  depends qt6-base qt6-declarative util-linux
+  make python qt6-tools
+  run breeze-icons shared-mime-info
+  docs no
+  checksum
+end
+
+pkg kcrash
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kcrash
+  desc Support for application crash analysis and bug report from apps
+  license LGPL-2.1-or-later
+  depends kcoreaddons kwindowsystem libX11 qt6-base
+  make qt6-tools
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kdbusaddons
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kdbusaddons
+  desc Addons to QtDBus
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends qt6-base qt6-declarative
+  make qt6-tools
+  run shared-mime-info
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kdeclarative
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kdeclarative
+  desc Provides integration of QML and KDE Frameworks
+  license LGPL-2.1-or-later
+  depends kconfig kglobalaccel kguiaddons ki18n kiconthemes kio kpackage kwidgetsaddons kwindowsystem libepoxy qt6-base qt6-declarative qt6-shadertools
+  make qt6-tools
+  args -DBUILD_EXAMPLES=OFF
+  docs no
+  checksum
+end
+
+pkg kded
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kded
+  desc Extensible deamon for providing system level services
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons kservice qt6-base
+  docs optional
+  checksum
+end
+
+pkg kdesu
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kdesu
+  desc Integration with su for elevated privileges
+  license LGPL-2.1-only
+  depends kconfig kcoreaddons ki18n kpty kservice qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kdoctools
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kdoctools
+  desc Documentation generation from docbook
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends karchive ki18n libxml2 libxslt qt6-base
+  make docbook-xml docbook-xsl libxslt perl perl-uri qt6-tools
+  run docbook-xml docbook-xsl
+  docs no
+  checksum
+end
+
+pkg kfilemetadata
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kfilemetadata
+  desc A library for extracting file metadata
+  license LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only 
+  depends attr ffmpeg karchive kcodecs kconfig kcoreaddons ki18n qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kglobalaccel
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kglobalaccel
+  desc Add support for global workspace shortcuts
+  license LGPL-2.1-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons kwindowsystem qt6-base qt6-declarative xcb-util-keysyms
+  make qt6-tools
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kguiaddons
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kguiaddons
+  desc Addons to QtGui
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends libX11 libxcb qt6-base qt6-declarative qt6-wayland wayland
+  make plasma-wayland-protocols python qt6-tools wayland-protocols
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kholidays
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kholidays
+  desc Support for icon themes
+  license LGPL-2.0-or-later
+  depends qt6-base qt6-declarative
+  make bison flex qt6-tools
+  docs no
+  checksum
+end
+
+pkg ki18n
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/ki18n
+  desc Advanced internationalization framework
+  license LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-or-later
+  depends qt6-base qt6-declarative
+  make python qt6-tools
+  run iso-codes
+  docs no
+  checksum
+end
+
+pkg kiconthemes
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kiconthemes
+  desc Support for icon themes
+  license LGPL-2.1-only
+  depends karchive kcolorscheme kconfigwidgets kcoreaddons ki18n kitemviews kwidgetsaddons qt6-base qt6-declarative qt6-svg
+  make qt6-tools
+  run breeze-icons
+  docs no
+  checksum
+end
+
+pkg kidletime
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kidletime
+  desc Monitoring user activity
+  license LGPL-2.0-only
+  depends libX11 libxcb qt6-base qt6-wayland wayland
+  make plasma-wayland-protocols qt6-tools wayland-protocols
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kimageformats
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kimageformats
+  desc Image format plugins for Qt
+  license LGPL-2.1-or-later
+  depends karchive qt6-base
+  args -DKIMAGEFORMATS_JXL=OFF -DKIMAGEFORMATS_JP2=OFF -DKIMAGEFORMATS_HEIF=OFF
+  docs no
+  checksum
+end
+
+pkg kio
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kio
+  desc Resource and network access abstraction
+  license LGPL-2.1-only, LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only
+  depends karchive kbookmarks kcolorscheme kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kguiaddons ki18n kiconthemes kitemviews kjobwidgets knotifications kservice kwallet kwidgetsaddons kwindowsystem libxml2 libxslt qt6-base solid util-linux
+  make libxslt qt6-tools
+  x11 WITH_X11
+  docs optional
+  checksum
+end
+
+pkg kirigami
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kirigami
+  desc A QtQuick based components set
+  license LGPL-2.0-only
+  depends kconfig kcoreaddons ki18n kwindowsystem qt6-base qt6-declarative qt6-shadertools qt6-svg
+  make qt6-tools
+  args -DBUILD_EXAMPLES=OFF
+  docs no
+  checksum
+end
+
+pkg kitemmodels
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kitemmodels
+  desc Models for Qt Model/View system
+  license LGPL-2.0-only, LGPL-2.0-or-later
+  depends qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kitemviews
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kitemviews
+  desc Widget addons for Qt Model/View
+  license GPL-2.0-only, LGPL-2.1-only
+  depends qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kjobwidgets
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kjobwidgets
+  desc Widgets for tracking KJob instances
+  license LGPL-2.1-only, LGPL-2.1-only, LGPL-3.0-only
+  depends kcoreaddons knotifications kwidgetsaddons qt6-base
+  make python qt6-tools
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg kmime
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kmime
+  desc Library to assist handling MIME data
+  license LGPL-2.0-only, LGPL-2.0-or-later
+  depends kcodecs qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg knewstuff
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/knewstuff
+  desc Framework for downloading and sharing additional application data
+  license LGPL-2.1-or-later
+  depends attica karchive kcompletion kconfig kcoreaddons ki18n kiconthemes kio kitemviews kpackage kservice ktextwidgets kwidgetsaddons kxmlgui qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg knotifications
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/knotifications
+  desc Abstraction for system notifications
+  license BSD-3-Clause, LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-only, LGPL-3.0-only
+  depends kconfig kcoreaddons kwindowsystem libcanberra qt6-base qt6-declarative
+  make python qt6-tools
+  docs no
+  checksum
+end
+
+pkg knotifyconfig
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/knotifyconfig
+  desc Configuration system for KNotify
+  license LGPL-2.0-only
+  depends kcompletion kconfig ki18n kio qt6-base qt6-multimedia
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kpackage
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kpackage
+  desc Framework that lets applications manage user installable packages of non-binary assets
+  license LGPL-2.1-or-later
+  depends karchive kcoreaddons ki18n qt6-base
+  make qt6-tools
+  docs optional
+  checksum
+end
+
+pkg kparts
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kparts
+  desc Document centric plugin system
+  license LGPL-2.1-only, LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only
+  depends kconfig kcoreaddons ki18n kiconthemes kio kjobwidgets kservice ktextwidgets kwidgetsaddons kxmlgui qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kplotting
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kplotting
+  desc Lightweight plotting framework
+  license LGPL-2.1-or-later
+  depends qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kpty
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kpty
+  desc Pty abstraction
+  license LGPL-2.1-or-later
+  depends kcoreaddons ki18n qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kquickcharts
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kquickcharts
+  desc A QtQuick plugin providing high-performance charts
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends qt6-base qt6-declarative qt6-shadertools
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg krunner
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/krunner
+  desc Framework for providing different actions given a string query
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends kconfig kcoreaddons ki18n kio kitemmodels kservice kwindowsystem qt6-base threadweaver
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kservice
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kservice
+  desc Advanced plugin and service introspection
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons ki18n qt6-base
+  make bison flex qt6-tools
+  docs optional
+  checksum
+end
+
+pkg kstatusnotifieritem
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kstatusnotifieritem
+  desc Implementation of Status Notifier Items
+  license LGPL-2.0-or-later
+  depends kwindowsystem qt6-base
+  make python qt6-tools
+  x11 !WITHOUT_X11
+  docs no
+  checksum
+end
+
+pkg ksvg
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/ksvg
+  desc Configuration system
+  license LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later
+  depends karchive kcolorscheme kconfig kcoreaddons kguiaddons kirigami qt6-base qt6-declarative qt6-svg
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg ktexteditor
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/ktexteditor
+  desc Advanced embeddable text editor
+  license LGPL-2.0-or-later, LGPL-2.0-only, LGPL-3.0-only
+  depends karchive kauth kcolorscheme kconfig kguiaddons ki18n kiconthemes kio kparts qt6-base qt6-declarative qt6-speech sonnet syntax-highlighting
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg ktexttemplate
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/ktexttemplate
+  desc Library to allow application developers to separate the structure of documents from the data they contain
+  license LGPL-2.0-or-later, LGPL-2.1-or-later
+  depends qt6-base
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg ktextwidgets
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/ktextwidgets
+  desc Advanced text editing widgets
+  license LGPL-2.1-or-later
+  depends kcompletion kconfig kconfigwidgets ki18n kiconthemes kservice kwidgetsaddons qt6-base qt6-speech sonnet
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kunitconversion
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kunitconversion
+  desc Support for unit conversion
+  license LGPL-2.1-or-later
+  depends ki18n qt6-base
+  make python qt6-tools
+  docs no
+  checksum
+end
+
+pkg kuserfeedback
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kuserfeedback
+  desc Framework for collecting user feedback for applications via telemetry and surveys
+  license MIT
+  depends qt6-base qt6-declarative qt6-svg
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kwallet
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kwallet
+  desc Secure and unified container for user passwords
+  license LGPL-2.1-or-later
+  depends gpgme kcolorscheme kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons ki18n kiconthemes knotifications kservice kwidgetsaddons kwindowsystem libgcrypt libsecret qca qt6-base
+  make qt6-tools
+  x11 WITH_X11
+  docs optional
+  checksum
+end
+
+pkg kwidgetsaddons
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kwidgetsaddons
+  desc Addons to QtWidgets
+  license GPL-2.0-only, LGPL-2.1-only, Unicode-DFS-2016
+  depends qt6-base
+  make python qt6-tools
+  docs no
+  checksum
+end
+
+pkg kwindowsystem
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kwindowsystem
+  desc Access to the windowing system
+  license MIT, LGPL-2.1-only, LGPL-3.0-only
+  depends libX11 libXrender libxcb libxkbcommon qt6-base qt6-declarative qt6-wayland xcb-util-keysyms xcb-util-wm
+  make plasma-wayland-protocols qt6-tools wayland-protocols
+  x11 KWINDOWSYSTEM_X11
+  docs no
+  checksum
+end
+
+pkg kxmlgui
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/kxmlgui
+  desc User configurable main windows
+  license LGPL-2.1-only, LGPL-2.1-or-later
+  depends attica kconfig kconfigwidgets kcoreaddons kglobalaccel kguiaddons ki18n kiconthemes kitemviews ktextwidgets kwidgetsaddons qt6-base
+  make python qt6-tools
+  docs no
+  checksum
+end
+
+pkg prison
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/prison
+  desc A barcode API to produce QRCode barcodes and DataMatrix barcodes
+  license MIT
+  depends qrencode qt6-base qt6-declarative qt6-multimedia zxing-cpp
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg purpose
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/purpose
+  desc Framework for providing abstractions to get the developer's purposes fulfilled
+  license LGPL-2.1-or-later
+  depends kcmutils kconfig kcoreaddons ki18n kio kirigami kitemmodels knotifications kservice prison qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg qqc2-desktop-style
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/qqc2-desktop-style
+  desc A style for Qt Quick Controls 2 to make it follow your desktop theme
+  license LGPL-3.0-only, GPL-2.0-only, GPL-3.0-only
+  depends kconfig kconfigwidgets kiconthemes kirigami qt6-base qt6-declarative sonnet
+  docs no
+  checksum
+end
+
+pkg solid
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/solid
+  desc Hardware integration and detection
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends libudev-zero qt6-base util-linux
+  make bison flex qt6-tools
+  docs no
+  checksum
+end
+
+pkg sonnet
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/sonnet
+  desc Spelling framework for Qt
+  license LGPL-2.1-only
+  depends qt6-base qt6-declarative zlib
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg syntax-highlighting
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/syntax-highlighting
+  desc Syntax highlighting engine for structured text and code
+  license MIT
+  depends qt6-base qt6-declarative
+  make perl qt6-tools
+  docs no
+  checksum
+end
+
+pkg threadweaver
+  set frameworks
+  cat kf6
+  home https://invent.kde.org/frameworks/threadweaver
+  desc High-level multithreading framework
+  license LGPL-2.1-only
+  depends qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+
+# ---- Plasma ----------------------------------------------------------------
+
+pkg aurorae
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/aurorae
+  desc Themeable window decoration for KWin
+  license GPL-2.0-or-later
+  depends kcmutils kcolorscheme kconfig kcoreaddons kdecoration ki18n knewstuff kpackage ksvg qt6-base qt6-declarative
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg breeze
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/breeze
+  desc Artwork, styles and assets for the Breeze visual style for the Plasma Desktop
+  license GPL-2.0-or-later
+  depends frameworkintegration kcmutils kcolorscheme kconfig kcoreaddons kdecoration kguiaddons ki18n kiconthemes kwindowsystem qt6-base qt6-declarative qt6-svg
+  args -DBUILD_QT5=OFF
+  docs no
+  checksum
+end
+
+pkg breeze-gtk
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/breeze-gtk
+  desc A GTK Theme Built to Match KDE's Breeze
+  license LGPL-2.1-only
+  depends breeze
+  make python python-cairo sassc
+  docs no
+  checksum
+end
+
+pkg flatpak-kcm
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/flatpak-kcm
+  desc Flatpak Permissions Management KCM
+  license GPL-2.0-or-later
+  depends kcmutils kconfig kcoreaddons kdeclarative ki18n kitemmodels kservice qt6-declarative qt6-svg
+  run flatpak
+  docs no
+  checksum
+end
+
+pkg kactivitymanagerd
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kactivitymanagerd
+  desc System service to manage user's activities and track the usage patterns
+  license GPL-2.0-only, GPL-3.0-only
+  depends kconfig kcoreaddons kcrash kdbusaddons kglobalaccel ki18n kio kwindowsystem kxmlgui qt6-base
+  make boost-headers
+  docs no
+  checksum
+end
+
+pkg kde-cli-tools
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kde-cli-tools
+  desc Tools based on KDE Frameworks 5 to better interact with the system
+  license GPL-2.0-only, GPL-3.0-only, GPL-2.0-or-later, GPL-2.0-only, LGPL-2.1-only
+  depends kcmutils kconfig kcoreaddons kdeclarative kdesu ki18n kiconthemes kio kparts kservice kwindowsystem plasma-activities qt6-base qt6-svg
+  x11 WITH_X11
+  docs required
+  checksum
+end
+
+pkg kde-gtk-config
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kde-gtk-config
+  desc Syncs KDE settings to GTK applications
+  license GPL-2.0, LGPL-2.1-only, LGPL-3.0-only
+  depends glib gsettings-desktop-schemas gtk3 karchive kcmutils kcolorscheme kconfig kconfigwidgets kcoreaddons kdbusaddons kdecoration kguiaddons ki18n kiconthemes kio knewstuff kwindowsystem qt6-base qt6-svg
+  make sassc
+  docs no
+  checksum
+end
+
+pkg kdecoration
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kdecoration
+  desc Plugin based library to create window decorations
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends kcoreaddons ki18n qt6-base
+  docs no
+  checksum
+end
+
+pkg kdeplasma-addons
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kdeplasma-addons
+  desc All kind of addons to improve your Plasma experience
+  license LGPL-2.0-only, GPL-2.0-or-later
+  depends icu karchive kauth kcmutils kconfig kcoreaddons kdbusaddons kdeclarative kglobalaccel kguiaddons kholidays ki18n kiconthemes kio kjobwidgets knewstuff knotifications krunner kservice ksvg kunitconversion kwindowsystem kxmlgui libplasma plasma5support purpose qt6-base qt6-declarative sonnet
+  make corrosion rust
+  docs no
+  network yes
+  checksum
+end
+
+pkg kglobalacceld
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kglobalacceld
+  desc Daemon providing Global Keyboard Shortcut (Accelerator) functionality
+  license LGPL-2.0-or-later, LGPL-2.0-only, LGPL-2.1-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons kglobalaccel kio kjobwidgets knotifications kservice qt6-base xcb-util-keysyms
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg kinfocenter
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kinfocenter
+  desc A utility that provides information about a computer system
+  license GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only
+  depends kauth kcmutils kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kdeclarative ki18n kiconthemes kio kpackage kservice kwayland kwidgetsaddons kwindowsystem kxmlgui libdisplay-info libdrm libudev-zero lm_sensors mesa qt6-base qt6-declarative solid
+  docs required
+  checksum
+end
+
+pkg kmenuedit
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kmenuedit
+  desc Menu editor for Plasma Workspaces
+  license GPL-2.0-or-later
+  depends kcrash kdbusaddons kglobalaccel ki18n kiconthemes kio kitemviews kwindowsystem kxmlgui qt6-base sonnet
+  docs required
+  checksum
+end
+
+pkg knighttime
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/knighttime
+  desc Helpers for scheduling the dark-light cycle
+  license LGPL-2.0-or-later, LGPL-2.1-or-later
+  depends kconfig kcoreaddons kdbusaddons kholidays ki18n qt6-base qt6-positioning
+  docs no
+  checksum
+end
+
+pkg kpipewire
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kpipewire
+  desc Components relating to pipewire use in Plasma
+  license BSD-3-Clause, CC0-1.0, LGPL-2.1-only, LGPL-3.0-only, LicenseRef-KDE-Accepted-LGPL
+  depends ffmpeg kcoreaddons ki18n kwayland libdrm libepoxy libva mesa pipewire qt6-base qt6-declarative qt6-wayland wayland
+  make plasma-wayland-protocols
+  docs no
+  checksum
+end
+
+pkg kscreen
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kscreen
+  desc KDE's screen management software
+  license GPL-2.0-or-later, LGPL-2.1-or-later
+  depends kcmutils kconfig kconfigwidgets kcrash kdbusaddons kdeclarative kglobalaccel ki18n kiconthemes kimageformats kitemmodels ksvg kwidgetsaddons kxmlgui layer-shell-qt libkscreen libplasma plasma5support qt6-base qt6-declarative qt6-sensors
+  make wayland-protocols
+  run hicolor-icon-theme
+  docs no
+  checksum
+end
+
+pkg kscreenlocker
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kscreenlocker
+  desc Library and components for secure lock screen architecture
+  license GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only
+  depends elogind kcmutils kcrash kdeclarative kglobalaccel ki18n kidletime kio knotifications ksvg ktextwidgets kwayland kwindowsystem kxmlgui layer-shell-qt libkscreen libplasma libseccomp linux-pam qt6-base qt6-declarative solid xcb-util-keysyms
+  docs no
+  checksum
+end
+
+pkg ksshaskpass
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/ksshaskpass
+  desc ssh-add helper that uses kwallet and kpassworddialog
+  license GPL-2.0-or-later
+  depends kconfig kcoreaddons ki18n kwallet kwidgetsaddons qt6-base qtkeychain
+  docs optional
+  checksum
+end
+
+pkg ksystemstats
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/ksystemstats
+  desc A plugin based system monitoring daemon
+  license LicenseRef-KDE-Accepted-GPL, LicenseRef-KDE-Accepted-LGPL, CC0-1.0
+  depends kcoreaddons kcrash kdbusaddons kio libcap libksysguard libnl libudev-zero lm_sensors qt6-base solid
+  args -DWITH_NM=OFF
+  docs no
+  checksum
+end
+
+pkg kwallet-pam
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kwallet-pam
+  desc KWallet PAM integration
+  license LGPL-2.1-or-later
+  depends kwallet libgcrypt linux-pam
+  run socat
+  docs no
+  checksum
+end
+
+pkg kwayland
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kwayland
+  desc Qt-style Client and Server library wrapper for the Wayland libraries
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends mesa qt6-base qt6-wayland wayland
+  make plasma-wayland-protocols qt6-tools wayland-protocols
+  docs no
+  checksum
+end
+
+pkg kwin
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kwin
+  desc An easy to use, but flexible, composited Window Manager
+  license GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only
+  depends aurorae breeze fontconfig kauth kcmutils kcolorscheme kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kdeclarative kdecoration kglobalaccel kglobalacceld kguiaddons ki18n kiconthemes kidletime kio knewstuff knighttime knotifications kpackage kpipewire krunner kscreenlocker kservice ksvg ktextwidgets kwayland kwidgetsaddons kwindowsystem kxmlgui lcms2 libX11 libXi libcanberra libcap libdisplay-info libdrm libepoxy libinput libplasma libudev-zero libxcb libxcvt libxkbcommon mesa pipewire plasma-activities qt6-5compat qt6-base qt6-declarative qt6-multimedia qt6-sensors qt6-svg qt6-wayland vulkan-loader wayland xcb-util-cursor xcb-util-image xcb-util-keysyms xcb-util-wm
+  make plasma-wayland-protocols qt6-tools vulkan-headers wayland-protocols
+  run hwdata xwayland
+  x11 KWIN_BUILD_X11
+  docs optional
+  checksum
+end
+
+pkg kwrited
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/kwrited
+  desc KDE daemon listening for wall and write messages
+  license GPL-2.0-or-later
+  depends kcoreaddons kdbusaddons ki18n knotifications kpty qt6-base
+  docs no
+  checksum
+end
+
+pkg layer-shell-qt
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/layer-shell-qt
+  desc Qt component to allow applications to make use of the Wayland wl-layer-shell protocol
+  license GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only
+  depends libxkbcommon qt6-base qt6-declarative qt6-wayland wayland
+  make wayland-protocols
+  docs no
+  checksum
+end
+
+pkg libkscreen
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/libkscreen
+  desc KDE screen management software
+  license LGPL-2.1-or-later, GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only
+  depends kconfig kwayland qt6-base wayland
+  make plasma-wayland-protocols qt6-tools
+  docs no
+  checksum
+end
+
+pkg libksysguard
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/libksysguard
+  desc KDE system monitor library
+  license LGPL-2.1-or-later, GPL-2.0-only, GPL-3.0-only
+  depends kauth kcompletion kconfig kconfigwidgets kcoreaddons kglobalaccel ki18n kiconthemes kio knewstuff kpackage kservice kwidgetsaddons kwindowsystem libcap libdrm libnl libplasma lm_sensors qt6-base qt6-declarative solid zlib
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg libplasma
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/libplasma
+  desc Plasma library and runtime components based upon KDE Frameworks and Qt
+  license LGPL-2.1-or-later, GPL-2.0-or-later
+  depends karchive kcmutils kcolorscheme kconfig kconfigwidgets kcoreaddons kdbusaddons kdeclarative kglobalaccel kguiaddons ki18n kiconthemes kio kirigami knotifications kpackage kservice ksvg kwayland kwindowsystem kxmlgui mesa plasma-activities qt6-base qt6-declarative qt6-svg wayland
+  make plasma-wayland-protocols qt6-tools wayland-protocols
+  docs optional
+  checksum
+end
+
+pkg milou
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/milou
+  desc A dedicated search application built on top of Baloo
+  license GPL-2.0-or-later, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only
+  depends kconfig kcoreaddons kdeclarative ki18n kitemmodels krunner kservice ksvg libplasma qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg ocean-sound-theme
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/ocean-sound-theme
+  desc Ocean Sound Theme for Plasma
+  license BSD-2-Clause, CC-BY-SA-4.0 and CC0-1.0
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg plasma-activities
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-activities
+  desc Core components for the KDE's Activities
+  license GPL-2.0-or-later, LGPL-2.1-or-later, LGPL-2.1-only, LGPL-3.0-only
+  depends kconfig kcoreaddons kwindowsystem qt6-base qt6-declarative
+  make boost-headers qt6-tools
+  docs no
+  checksum
+end
+
+pkg plasma-activities-stats
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-activities-stats
+  desc A library for accessing the usage data collected by the activities system
+  license LGPL-2.1-only, LGPL-3.0-only
+  depends kconfig kcoreaddons plasma-activities qt6-base qt6-declarative
+  make boost-headers qt6-tools
+  docs no
+  checksum
+end
+
+pkg plasma-browser-integration
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-browser-integration
+  desc Components necessary to integrate browsers into the Plasma Desktop
+  license GPL-3.0-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons kfilemetadata ki18n kio kjobwidgets knotifications krunner kservice kstatusnotifieritem plasma-activities purpose qt6-base
+  docs no
+  checksum
+end
+
+pkg plasma-desktop
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-desktop
+  desc KDE Plasma Desktop
+  license GPL-2.0-only, LGPL-2.1-only
+  depends SDL2 attica baloo fontconfig kauth kcmutils kcodecs kconfig kcoreaddons kcrash kdbusaddons kdeclarative kded kglobalaccel kguiaddons ki18n kiconthemes kio kitemmodels knewstuff knotifications knotifyconfig kpackage kpipewire krunner ksvg kwallet kwidgetsaddons kwin kxmlgui libX11 libXcursor libXi libcanberra libksysguard libplasma libudev-zero libxcb libxkbcommon libxkbfile plasma-activities plasma-activities-stats plasma-workspace plasma5support polkit-qt6 qqc2-desktop-style qt6-5compat qt6-base qt6-declarative qt6-location qt6-shadertools qt6-svg sonnet wayland
+  make wayland-protocols
+  run xdg-user-dirs xkeyboard-config
+  args -DBUILD_KCM_TABLET=OFF
+  docs required
+  checksum
+end
+
+pkg plasma-integration
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-integration
+  desc Qt Platform Theme integration plugins for the Plasma workspace
+  license LGPL-2.1-only, LGPL-3.0-only, LGPL-2.1-only, LGPL-2.1-only, Nokia-Qt-exception-1.1, GPL-3.0-only, Nokia-Qt-exception-1.1
+  depends breeze kcolorscheme kconfig kconfigwidgets kguiaddons ki18n kiconthemes kio knotifications kstatusnotifieritem kwayland kwidgetsaddons kwindowsystem libX11 libXcursor libxcb qqc2-breeze-style qqc2-desktop-style qt6-base qt6-declarative wayland xdg-desktop-portal-kde
+  make plasma-wayland-protocols
+  run noto-fonts
+  args -DBUILD_QT5=OFF -DCMAKE_DISABLE_FIND_PACKAGE_FontHack=ON
+  x11 WITH_X11
+  docs no
+  checksum
+end
+
+pkg plasma-pa
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-pa
+  desc Plasma applet for audio volume management using PulseAudio
+  license LGPL-2.1-only, LGPL-3.0-only, GPL-2.0-only
+  depends glib kcmutils kconfig kcoreaddons kdbusaddons kdeclarative kglobalaccel ki18n knotifications kquickcharts kstatusnotifieritem ksvg libcanberra libplasma plasma-workspace pulseaudio pulseaudio-qt qt6-base qt6-declarative
+  docs required
+  checksum
+end
+
+pkg plasma-systemmonitor
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-systemmonitor
+  desc An application for monitoring system resources
+  license LicenseRef-KDE-Accepted-GPL, LicenseRef-KDE-Accepted-LGPL, CC0-1.0
+  depends kconfig kcrash kdbusaddons kdeclarative kglobalaccel ki18n kio kitemmodels knewstuff kpackage kservice ksystemstats kwindowsystem libksysguard qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg plasma-workspace
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-workspace
+  desc KDE Plasma Workspace
+  license GPL-2.0-only, GPL-3.0-only, LGPL-2.1-or-later, GPL-2.0-or-later, MIT, LGPL-2.1-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, LGPL-2.0-only
+  depends baloo breeze dbus icu karchive kauth kcmutils kcolorscheme kcoreaddons kcrash kdbusaddons kdeclarative kded kglobalaccel kglobalacceld kguiaddons kholidays ki18n kiconthemes kidletime kio kitemmodels knewstuff knighttime knotifications knotifyconfig kpackage kparts kpipewire kquickcharts krunner kscreenlocker kstatusnotifieritem ksvg ktexteditor ktextwidgets kunitconversion kuserfeedback kwallet kwayland kwin layer-shell-qt libX11 libXtst libcanberra libkscreen libksysguard libplasma libudev-zero libxcb libxkbcommon plasma-activities plasma-activities-stats plasma5support polkit-qt6 prison qcoro qt6-base qt6-declarative qt6-location qt6-positioning qt6-shadertools qt6-svg qt6-wayland union wayland xcb-util xcb-util-cursor xcb-util-image xcb-util-wm zlib
+  make plasma-wayland-protocols qt6-tools wayland-protocols
+  run iso-codes kactivitymanagerd kde-cli-tools kio-extras milou plasma-integration xdg-desktop-portal-kde
+  args -DBUILD_GEOTIMEZONED=OFF -DWITH_X11_SESSION=OFF -DINSTALL_SDDM_WAYLAND_SESSION=OFF
+  x11 WITH_X11
+  docs optional
+  checksum
+end
+
+pkg plasma-workspace-wallpapers
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma-workspace-wallpapers
+  desc Wallpapers for the Plasma Workspace
+  license GPL-2.0-or-later
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg plasma5support
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/plasma5support
+  desc Support components for porting from KF5/Qt5 to KF6/Qt6
+  license GPL-2.0-or-later
+  depends kconfig kcoreaddons kguiaddons kholidays ki18n kidletime kio knotifications kpackage kservice kunitconversion kxmlgui libksysguard qt6-base qt6-declarative solid
+  make qt6-tools
+  docs no
+  checksum
+end
+
+pkg polkit-kde-agent-1
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/polkit-kde-agent-1
+  desc Daemon providing a polkit authentication UI for KDE
+  license GPL-2.0-or-later
+  depends kcoreaddons kcrash kdbusaddons ki18n kiconthemes knotifications kwidgetsaddons kwindowsystem polkit-qt6 qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg powerdevil
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/powerdevil
+  desc Manages the power consumption settings of a Plasma Shell
+  license GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only
+  depends kauth kcmutils kconfig kcrash kdbusaddons kglobalaccel ki18n kidletime kio kirigami kitemmodels knotifications knotifyconfig krunner kwayland kwindowsystem kxmlgui libcap libkscreen libplasma libudev-zero plasma-activities plasma-workspace qcoro qt6-base qt6-declarative solid wayland
+  make plasma-wayland-protocols
+  docs optional
+  checksum
+end
+
+pkg qqc2-breeze-style
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/qqc2-breeze-style
+  desc Breeze inspired QQC2 style
+  license LicenseRef-KDE-Accepted-LGPL, LicenseRef-KFQF-Accepted-GPL
+  depends kcolorscheme kconfig kconfigwidgets kguiaddons kiconthemes kirigami kquickcharts qt6-base qt6-declarative
+  docs no
+  checksum
+end
+
+pkg spectacle
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/spectacle
+  desc Application for capturing desktop screenshots
+  license GPL-2.0-only
+  depends kconfig kcoreaddons kcrash kdbusaddons kdeclarative kglobalaccel kguiaddons ki18n kio kirigami knewstuff knotifications kpipewire kquickimageeditor kstatusnotifieritem kwayland kwidgetsaddons kwindowsystem kxmlgui layer-shell-qt libxcb pipewire prison purpose qt6-base qt6-declarative qt6-multimedia tesseract wayland xcb-util xcb-util-cursor xcb-util-image xcb-util-renderutil zxing-cpp
+  make plasma-wayland-protocols
+  x11 WITH_X11
+  docs optional
+  checksum
+end
+
+pkg systemsettings
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/systemsettings
+  desc Plasma system manager for hardware, software, and workspaces
+  license GPL-2.0-or-later
+  depends kauth kcmutils kcolorscheme kconfig kcrash kdbusaddons kdeclarative kguiaddons ki18n kiconthemes kio kirigami kitemmodels kitemviews kjobwidgets kpackage krunner kservice kwidgetsaddons kwindowsystem kxmlgui plasma-activities plasma-activities-stats plasma-workspace qt6-base qt6-declarative
+  docs optional
+  checksum
+end
+
+pkg union
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/union
+  desc A Qt style supporting both QtQuick and QtWidgets
+  license LGPL-2.1-only, LGPL-3.0-only, LicenseRef-KDE-Accepted-LGPL
+  depends breeze cxx-rust-cssparser karchive kcolorscheme kconfig kcoreaddons kguiaddons kiconthemes kirigami libplasma qt6-base qt6-declarative qt6-shadertools qt6-svg zlib
+  make qt6-shadertools
+  args -DBUILD_INPUT_PLASMASVG=OFF -DBUILD_TOOLS=OFF -DBUILD_EXAMPLES=OFF
+  docs no
+  checksum
+end
+
+pkg xdg-desktop-portal-kde
+  set plasma
+  cat plasma
+  home https://invent.kde.org/plasma/xdg-desktop-portal-kde
+  desc A backend implementation for xdg-desktop-portal that is using Qt/KDE
+  license LGPL-2.0-or-later
+  depends glib kconfig kcoreaddons kcrash kdeclarative kglobalaccel ki18n kiconthemes kio kirigami knotifications kpipewire kservice kstatusnotifieritem kwayland kwidgetsaddons kwindowsystem libepoxy libplasma libxkbcommon pipewire qt6-base qt6-declarative wayland
+  make plasma-wayland-protocols wayland-protocols
+  run xdg-desktop-portal
+  docs no
+  checksum
+end
+
+
+# ---- KDE Gear --------------------------------------------------------------
+
+pkg ark
+  set gear
+  cat gear
+  home https://invent.kde.org/utilities/ark
+  desc Graphical file compression/decompression utility with support for multiple formats
+  license GPL-2.0-only
+  depends karchive kconfig kcrash kdbusaddons kfilemetadata ki18n kiconthemes kio kitemmodels kparts kpty kservice kwidgetsaddons kwindowsystem libarchive qt6-base xz zlib zstd
+  run shared-mime-info
+  docs required
+  checksum
+end
+
+pkg baloo-widgets
+  set gear
+  cat gear
+  home https://invent.kde.org/libraries/baloo-widgets
+  desc Widgets for Baloo
+  license LGPL-2.0-only, LGPL-2.1-or-later
+  depends baloo kconfig kfilemetadata ki18n kio kservice qt6-base
+  docs no
+  checksum
+end
+
+pkg dolphin
+  set gear
+  cat gear
+  home https://invent.kde.org/system/dolphin
+  desc KDE File Manager
+  license GPL-2.0-only
+  depends baloo baloo-widgets kbookmarks kcmutils kcodecs kcolorscheme kcompletion kconfig kcoreaddons kcrash kdbusaddons kfilemetadata kguiaddons ki18n kiconthemes kio knewstuff knotifications kparts ktextwidgets kuserfeedback kwidgetsaddons kwindowsystem musl-fts plasma-activities qt6-base qt6-multimedia solid
+  docs optional
+  checksum
+end
+
+pkg kate
+  set gear
+  cat gear
+  home https://invent.kde.org/utilities/kate
+  desc A multi-document, multi-view text editor
+  license LGPL-2.0-only, LGPL-2.0-or-later
+  depends kconfig kcoreaddons kcrash kdbusaddons kguiaddons ki18n kiconthemes kio kitemmodels kjobwidgets knewstuff kparts ktexteditor kuserfeedback kwidgetsaddons kwindowsystem kxmlgui libplasma plasma-activities qt6-base qt6-declarative threadweaver
+  docs optional
+  checksum
+end
+
+pkg kio-extras
+  set gear
+  cat gear
+  home https://invent.kde.org/network/kio-extras
+  desc Additional components to increase the functionality of KIO
+  license GPL-2.0-or-later LGPL-2.1-only, LGPL-3.0-only
+  depends karchive kbookmarks kcmutils kcodecs kconfig kconfigwidgets kcoreaddons kdbusaddons kguiaddons ki18n kiconthemes kio knotifications kpty kstatusnotifieritem plasma-activities plasma-activities-stats qcoro qt6-base qt6-svg solid syntax-highlighting
+  run shared-mime-info
+  args -DWITH_LIBPROXY=OFF
+  docs required
+  checksum
+end
+
+pkg konsole
+  set gear
+  cat gear
+  home https://invent.kde.org/utilities/konsole
+  desc KDE's terminal emulator
+  license GPL-2.0-only, LGPL-2.1-or-later, Unicode-DFS-2016
+  depends icu kbookmarks kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kglobalaccel kguiaddons ki18n kiconthemes kio knewstuff knotifications knotifyconfig kparts kpty kservice ktextwidgets kwidgetsaddons kwindowsystem kxmlgui ncurses qcoro qt6-base qt6-multimedia
+  x11 WITH_X11
+  docs optional
+  checksum
+end
+
