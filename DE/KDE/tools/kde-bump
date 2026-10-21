@@ -1,0 +1,364 @@
+#!/bin/sh
+# kde-bump - move kde/manifest to the newest stable Qt 6, Frameworks, Plasma
+# and Gear releases, fill in the checksums, then rerun tools/kde-gen.
+#
+#   tools/kde-bump                 bump every set and standalone package, fill
+#                                  every empty checksum, regenerate
+#   tools/kde-bump --dry-run       only show what would change, download nothing
+#   tools/kde-bump --fill          no version changes, only fill empty checksums
+#   tools/kde-bump --set plasma=6.8.2 --set qcoro=0.13.0
+#                                  use that version instead of the newest one
+#   tools/kde-bump --report FILE   also write the result table to FILE (markdown)
+#
+# Needs curl, b3sum, tar, xz, gzip and git (git only for github watches).
+# sha256sum is used, when present, to check downloads against the .sha256 file
+# download.kde.org and download.qt.io publish next to every tarball.
+set -eu
+
+cd "$(dirname "$0")/.."
+MANIFEST=kde/manifest
+[ -r "$MANIFEST" ] || { echo "kde-bump: no $MANIFEST" >&2; exit 2; }
+
+dry=0 fill=0 report='' overrides=''
+while [ $# -gt 0 ]; do
+    case $1 in
+        -n|--dry-run) dry=1 ;;
+        --fill) fill=1 ;;
+        --set) [ $# -ge 2 ] || { echo "kde-bump: --set needs NAME=VERSION" >&2; exit 2; }
+               case $2 in *=*) ;; *) echo "kde-bump: --set needs NAME=VERSION, got $2" >&2; exit 2 ;; esac
+               overrides="$overrides $2"; shift ;;
+        --set=*) overrides="$overrides ${1#--set=}" ;;
+        --report) [ $# -ge 2 ] || { echo "kde-bump: --report needs a file" >&2; exit 2; }
+                  report=$2; shift ;;
+        -h|--help) sed -n '2,16p' "$0"; exit 0 ;;
+        *) echo "kde-bump: unknown option $1" >&2; exit 2 ;;
+    esac
+    shift
+done
+
+for t in curl tar; do
+    command -v "$t" >/dev/null 2>&1 || { echo "kde-bump: $t is required" >&2; exit 2; }
+done
+if [ "$dry" = 0 ]; then
+    command -v b3sum >/dev/null 2>&1 || { echo "kde-bump: b3sum is required" >&2; exit 2; }
+fi
+have_sha=0
+command -v sha256sum >/dev/null 2>&1 && have_sha=1
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT INT TERM
+: >"$work/updates" ; : >"$work/table" ; : >"$work/failed"
+
+say() { printf '%s\n' "$*" >&2; }
+
+# ---- version helpers -------------------------------------------------------
+
+# newest plain release from stdin, optionally with the given first component.
+# A release has at least one dot: index pages also link bare numbers (mirror
+# ids, sizes), and one of those once came back as Gear "29561".
+vmax() {
+    awk -v major="${1:-}" '
+    $0 ~ /^[0-9]+(\.[0-9]+)+$/ {
+        if (major != "" && $0 !~ ("^" major "\\.")) next
+        n = split($0, a, "."); better = 0
+        if (best == "") better = 1
+        else {
+            m = split(best, b, ".")
+            for (i = 1; i <= (n > m ? n : m); i++) {
+                x = (i <= n ? a[i] + 0 : -1); y = (i <= m ? b[i] + 0 : -1)
+                if (x != y) { better = (x > y); break }
+            }
+        }
+        if (better) best = $0
+    }
+    END { if (best != "") print best }'
+}
+
+# hrefs of an HTML index, last path component only
+links() {
+    curl -fsSL --retry 3 "$1" 2>/dev/null | grep -o 'href="[^"]*"' | sed 's/^href="//; s/"$//; s/[?#].*//'
+}
+index_dirs() { links "$1" | grep '/$' | sed 's|/$||; s|.*/||'; }
+index_files() { # INDEX NAME -> versions of NAME-VERSION.tar.xz
+    links "$1" | sed 's|.*/||' | sed -n "s/^$2-\\(.*\\)\\.tar\\.xz\$/\\1/p"
+}
+
+# 0 when $1 is a newer release than $2
+vnewer() {
+    [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | vmax)" = "$1" ]
+}
+
+newest_kde_flat() { index_files "$1" "$2" | vmax; }
+newest_kde_dirs() { index_dirs "$1" | vmax; }
+newest_github() {
+    command -v git >/dev/null 2>&1 || { say "kde-bump: git is needed for the github watch of $1"; return 0; }
+    git ls-remote --tags --refs "https://github.com/$1.git" 2>/dev/null |
+        sed -n 's|.*refs/tags/v\{0,1\}||p' | vmax
+}
+
+newest_set() {
+    case $1 in
+        frameworks)
+            _d=$(index_dirs https://download.kde.org/stable/frameworks/ | vmax "${2%%.*}")
+            [ -n "$_d" ] && newest_kde_flat "https://download.kde.org/stable/frameworks/$_d/" extra-cmake-modules ;;
+        plasma)
+            index_dirs https://download.kde.org/stable/plasma/ | vmax "${2%%.*}" ;;
+        gear)
+            index_dirs https://download.kde.org/stable/release-service/ | vmax ;;
+        qt)
+            _d=$(index_dirs https://download.qt.io/official_releases/qt/ | vmax "${2%%.*}")
+            [ -n "$_d" ] && index_dirs "https://download.qt.io/official_releases/qt/$_d/" | vmax "${_d%%.*}" ;;
+    esac
+}
+
+override_for() {
+    for _o in $overrides; do
+        if [ "${_o%%=*}" = "$1" ]; then printf '%s\n' "${_o#*=}"; return 0; fi
+    done
+    return 1
+}
+
+# ---- manifest reading ------------------------------------------------------
+
+# sets: "NAME VERSION"; packages: "pkg|set|src|version|url|watch|checksum"
+awk '/^set / { print $2, $3 }' "$MANIFEST" >"$work/sets"
+awk '
+function flush() { if (pkg != "") print pkg "|" F["set"] "|" F["src"] "|" F["version"] "|" F["url"] "|" F["watch"] "|" F["checksum"] }
+/^[ \t]*#/ || /^[ \t]*$/ { next }
+$1 == "pkg" { pkg = $2; split("", F); next }
+$1 == "end" { flush(); pkg = ""; next }
+pkg != "" { k = $1; v = $0; sub(/^[ \t]*[^ \t]+[ \t]*/, "", v); sub(/[ \t]+$/, "", v); F[k] = v }
+' "$MANIFEST" >"$work/pkgs"
+
+url_for() { # SET SRC VERSION [URL]
+    case $1 in
+        frameworks) printf '%s\n' "https://download.kde.org/stable/frameworks/${3%.*}/$2-$3.tar.xz" ;;
+        plasma) printf '%s\n' "https://download.kde.org/stable/plasma/$3/$2-$3.tar.xz" ;;
+        gear) printf '%s\n' "https://download.kde.org/stable/release-service/$3/src/$2-$3.tar.xz" ;;
+        qt) printf '%s\n' "https://download.qt.io/official_releases/qt/${3%.*}/$3/submodules/$2-everywhere-src-$3.tar.xz" ;;
+        standalone) printf '%s\n' "$4" | sed "s|\${version}|$3|g; s|\$version|$3|g; s|>.*||" ;;
+    esac
+}
+
+# ---- downloading -----------------------------------------------------------
+
+# fetch URL -> sets got_file, got_b3, got_check (sha256, tofu or failed)
+fetch() {
+    got_file=$work/dl/${1##*/}
+    mkdir -p "$work/dl"
+    rm -f "$got_file"
+    if ! curl -fsSL --retry 3 -o "$got_file" "$1"; then
+        got_check=failed got_b3=
+        return 1
+    fi
+    got_check=tofu
+    if [ "$have_sha" = 1 ] && _s=$(curl -fsSL --retry 2 "$1.sha256" 2>/dev/null); then
+        _s=$(printf '%s\n' "$_s" | awk 'NR == 1 { print $1 }')
+        case ${#_s}:$_s in
+            64:*[!0-9a-f]*) ;;
+            64:*) if [ "$(sha256sum "$got_file" | awk '{print $1}')" = "$_s" ]; then
+                           got_check=sha256
+                       else
+                           say "kde-bump: $1 does not match its published sha256"
+                           got_check=failed got_b3=
+                           return 1
+                       fi ;;
+        esac
+    fi
+    got_b3=$(b3sum --no-names "$got_file" | awk '{print $1}')
+}
+
+# SPDX names from the LICENSES/ folder KDE and Qt tarballs carry
+licenses_of() {
+    case $1 in
+        *.tar.xz) _dc="xz -dc" ;;
+        *.tar.gz|*.tgz) _dc="gzip -dc" ;;
+        *) return 0 ;;
+    esac
+    $_dc "$1" 2>/dev/null | tar -tf - 2>/dev/null |
+        sed -n 's|^[^/]*/LICENSES/\([^/]*\)\.txt$|\1|p' | grep -v '^LicenseRef-' | sort -u |
+        awk '{ r = r (r == "" ? "" : ", ") $0 } END { print r }'
+}
+
+row() { printf '%s|%s|%s|%s\n' "$1" "$2" "$3" "$4" >>"$work/table"; }
+
+# ---- sets ------------------------------------------------------------------
+
+while read -r sname sver; do
+    new=$sver note=''
+    if [ "$fill" = 0 ]; then
+        if o=$(override_for "$sname"); then new=$o
+        else
+            found=$(newest_set "$sname" "$sver" || true)
+            if [ -z "$found" ]; then say "kde-bump: could not read the $sname index, keeping $sver"; note='index unreadable, '
+            elif vnewer "$found" "$sver"; then new=$found
+            elif [ "$found" != "$sver" ]; then say "kde-bump: the $sname index offers $found, older than $sver, keeping $sver"; fi
+        fi
+    fi
+    # every package of the set is fetched when the version moves, otherwise
+    # only the ones with no checksum yet
+    todo=$(awk -F'|' -v s="$sname" -v all="$([ "$new" != "$sver" ] && echo 1 || echo 0)" \
+        '$2 == s && (all == 1 || $7 == "") { print $1 "|" ($3 != "" ? $3 : $1) }' "$work/pkgs")
+    if [ "$new" = "$sver" ] && [ -z "$todo" ]; then row "$sname" "$sver" "$sver" "${note:-current}"; continue; fi
+    n=$(printf '%s\n' "$todo" | grep -c . || true)
+    if [ "$dry" = 1 ]; then row "$sname" "$sver" "$new" "$note$n tarballs to fetch"; continue; fi
+
+    say "kde-bump: $sname $sver -> $new, fetching $n tarballs"
+    : >"$work/set.updates"; bad=0 nsha=0 ntofu=0
+    for e in $todo; do
+        p=${e%%|*} src=${e#*|}
+        u=$(url_for "$sname" "$src" "$new")
+        if fetch "$u"; then
+            echo "pkg $p checksum $got_b3" >>"$work/set.updates"
+            l=$(licenses_of "$got_file")
+            [ -n "$l" ] && echo "pkg $p license $l" >>"$work/set.updates"
+            [ "$new" != "$sver" ] && echo "pkg $p resetrev" >>"$work/set.updates"
+            if [ "$got_check" = sha256 ]; then nsha=$((nsha + 1)); else ntofu=$((ntofu + 1)); fi
+        else
+            echo "$p ($u)" >>"$work/failed"; bad=1
+        fi
+        rm -f "$got_file"
+    done
+    if [ "$bad" = 1 ]; then
+        # a half-moved set would not build, so the whole set stays where it was
+        row "$sname" "$sver" "$new" "${note}NOT applied, downloads failed"
+        continue
+    fi
+    cat "$work/set.updates" >>"$work/updates"
+    [ "$new" != "$sver" ] && echo "set $sname $new" >>"$work/updates"
+    row "$sname" "$sver" "$new" "$note$nsha sha256-checked, $ntofu unchecked"
+done <"$work/sets"
+
+# ---- standalone packages ---------------------------------------------------
+
+while IFS='|' read -r p pset src ver url watch sum; do
+    [ "$pset" = standalone ] || continue
+    new=$ver
+    if [ "$fill" = 0 ]; then
+        if o=$(override_for "$p"); then new=$o
+        else
+            # shellcheck disable=SC2086
+            set -- $watch
+            found=
+            case ${1:-} in
+                kde-flat) found=$(newest_kde_flat "$2" "${3:-$p}" || true) ;;
+                kde-dirs) found=$(newest_kde_dirs "$2" || true) ;;
+                github) found=$(newest_github "$2" || true) ;;
+                *) say "kde-bump: $p has no usable watch line" ;;
+            esac
+            if [ -n "$found" ] && vnewer "$found" "$ver"; then new=$found
+            elif [ -n "$found" ] && [ "$found" != "$ver" ]; then say "kde-bump: $p offers $found, older than $ver, keeping $ver"
+            elif [ -z "$found" ] && [ -n "${1:-}" ]; then say "kde-bump: no release found for $p, keeping $ver"; fi
+        fi
+    fi
+    if [ "$new" = "$ver" ] && [ -n "$sum" ]; then row "$p" "$ver" "$ver" "current"; continue; fi
+    if [ "$dry" = 1 ]; then row "$p" "$ver" "$new" "1 tarball to fetch"; continue; fi
+    u=$(url_for standalone "$src" "$new" "$url")
+    if fetch "$u"; then
+        echo "pkg $p checksum $got_b3" >>"$work/updates"
+        l=$(licenses_of "$got_file")
+        [ -n "$l" ] && echo "pkg $p license $l" >>"$work/updates"
+        if [ "$new" != "$ver" ]; then
+            echo "pkg $p version $new" >>"$work/updates"
+            echo "pkg $p resetrev" >>"$work/updates"
+        fi
+        row "$p" "$ver" "$new" "$([ "$got_check" = sha256 ] && echo sha256-checked || echo unchecked)"
+    else
+        echo "$p ($u)" >>"$work/failed"
+        row "$p" "$ver" "$new" "NOT applied, download failed"
+    fi
+    rm -f "$got_file"
+done <"$work/pkgs"
+
+# ---- hand-written templates with no checksum yet ---------------------------
+
+for t in */*/template; do
+    case $t in kde/*|tools/*) continue ;; esac
+    head -n 1 "$t" | grep -q '^# Generated by tools/kde-gen' && continue
+    grep -q '^checksum=""' "$t" || continue
+    p=${t%/template}; p=${p##*/}
+    if [ "$dry" = 1 ]; then row "$p" "-" "-" "checksum to fill"; continue; fi
+    # the use_* helpers only matter for build-time lists, not for dist_files
+    # shellcheck disable=SC2329
+    dist=$( set +eu
+            use() { return 1; }; use_if() { :; }; use_enable() { :; }; use_with() { :; }
+            use_bool() { :; }; use_cmake() { :; }
+            # shellcheck disable=SC1090
+            . "./$t" >/dev/null 2>&1; printf '%s\n' "${dist_files:-}" )
+    sums='' ok=1 checks=''
+    for d in $dist; do
+        case $d in git+*) sums="$sums SKIP"; continue ;; esac
+        if fetch "${d%%>*}"; then sums="$sums $got_b3"; checks="$checks $got_check"
+        else ok=0; echo "$p (${d%%>*})" >>"$work/failed"; fi
+        rm -f "$got_file"
+    done
+    if [ "$ok" = 1 ] && [ -n "$sums" ]; then
+        sums=${sums# }
+        sed "s|^checksum=\"\"|checksum=\"$sums\"|" "$t" >"$t.new" && mv -f "$t.new" "$t"
+        case $checks in *tofu*) c=unchecked ;; *) c=sha256-checked ;; esac
+        row "$p" "-" "-" "checksum filled, $c"
+    else
+        row "$p" "-" "-" "NOT filled, download failed"
+    fi
+done
+
+# ---- write the manifest ----------------------------------------------------
+
+if [ "$dry" = 0 ] && [ -s "$work/updates" ]; then
+    awk -v upd="$work/updates" '
+    BEGIN {
+        while ((getline l < upd) > 0) {
+            n = split(l, a, " ")
+            if (a[1] == "set") SET[a[2]] = a[3]
+            else if (a[3] == "resetrev") RESET[a[2]] = 1
+            else { v = l; sub(/^pkg [^ ]+ [^ ]+ /, "", v); U[a[2], a[3]] = v; KEYS[a[2]] = KEYS[a[2]] " " a[3] }
+        }
+    }
+    function pending(   i, n, k, r) {
+        n = split(KEYS[pkg], k, " "); r = ""
+        for (i = 1; i <= n; i++) if (!((pkg, k[i]) in DONE)) { DONE[pkg, k[i]] = 1; print "  " k[i] " " U[pkg, k[i]] }
+    }
+    $1 == "set" && pkg == "" && ($2 in SET) { print "set " $2 " " SET[$2]; next }
+    $1 == "pkg" { pkg = $2; print; next }
+    $1 == "end" && pkg != "" { pending(); pkg = ""; print; next }
+    pkg != "" && $1 == "revision" && (pkg in RESET) { next }
+    pkg != "" && ((pkg, $1) in U) { print "  " $1 " " U[pkg, $1]; DONE[pkg, $1] = 1; next }
+    { print }
+    ' "$MANIFEST" >"$MANIFEST.new"
+    mv -f "$MANIFEST.new" "$MANIFEST"
+
+    # the meta packages carry the set versions
+    for m in meta/kde-plasma-desktop:plasma meta/kde-plasma-extras:plasma meta/kde-apps-base:gear; do
+        f=${m%%:*}/template s=${m#*:}
+        [ -f "$f" ] || continue
+        v=$(awk -v s="$s" '$1 == "set" && $2 == s { print $3 }' "$MANIFEST")
+        if [ -n "$v" ] && ! grep -q "^version=$v\$" "$f"; then
+            sed "s/^version=.*/version=$v/; s/^revision=.*/revision=1/" "$f" >"$f.new" && mv -f "$f.new" "$f"
+        fi
+    done
+    sh tools/kde-gen >&2
+fi
+
+# ---- report ----------------------------------------------------------------
+
+{
+    echo "| name | was | now | result |"
+    echo "|---|---|---|---|"
+    awk -F'|' '$4 != "current" { print "| " $1 " | " $2 " | " $3 " | " $4 " |" }' "$work/table"
+    nc=$(awk -F'|' '$4 == "current"' "$work/table" | wc -l | tr -d ' ')
+    echo
+    echo "$nc sets or packages were already current."
+    if [ -s "$work/failed" ]; then
+        echo
+        echo "Downloads that failed:"
+        sed 's/^/- /' "$work/failed"
+    fi
+    echo
+    echo "\"unchecked\" means no published sha256 was found, so the blake3 sum is"
+    echo "trust on first use. Check those by hand before merging if that matters to you."
+} >"$work/report.md"
+cat "$work/report.md"
+[ -n "$report" ] && cp "$work/report.md" "$report"
+
+[ -s "$work/failed" ] && exit 1
+exit 0

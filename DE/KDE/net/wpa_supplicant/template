@@ -1,0 +1,41 @@
+pkg_name=wpa_supplicant
+version=2.11
+revision=1
+build_style=custom
+short_desc="WPA/WPA2/WPA3 and 802.1X supplicant for Wi-Fi"
+home_page="https://w1.fi/wpa_supplicant"
+license="BSD-3-Clause"
+dist_files="https://w1.fi/releases/wpa_supplicant-${version}.tar.gz"
+checksum="3b61ac45430831f5fdc4ef8d00b5415075a2f236f591213eca22c9c7312707c3"
+
+use_flags="man services"
+
+depends="libnl libressl"
+make_depends="libnl libressl linux-headers pkgconf"
+config_files="/etc/wpa_supplicant/s6.conf"
+
+do_build() {
+    cd wpa_supplicant
+    cp -f "$FILESDIR/dot.config" .config
+    $make_cmd $make_jobs CC="$CC" BINDIR=/usr/bin LIBDIR=/usr/lib
+}
+
+do_install() {
+    cd wpa_supplicant
+    bbin wpa_supplicant
+    bbin wpa_cli
+    bbin wpa_passphrase
+    if use man; then
+        for _m in doc/docbook/wpa_supplicant.8 doc/docbook/wpa_cli.8 doc/docbook/wpa_passphrase.8 doc/docbook/wpa_supplicant.conf.5; do
+            if [ -f "$_m" ]; then bman "$_m"; fi
+        done
+    fi
+    bdoc wpa_supplicant.conf
+    binstall "$FILESDIR/s6.conf" 0644 /etc/wpa_supplicant
+
+    if use services; then
+        bcopy "$FILESDIR/sources/." /usr/share/s6-rc/sources
+        find "$DESTDIR/usr/share/s6-rc/sources" -type f -name run -exec chmod 0755 {} +
+    fi
+    blicense ../COPYING
+}

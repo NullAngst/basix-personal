@@ -1,0 +1,32 @@
+pkg_name=tuigreet
+version=0.11.1
+revision=1
+build_style=cargo
+short_desc="Console greeter for greetd (the Plasma login screen on Basix)"
+home_page="https://github.com/apognu/tuigreet"
+license="GPL-3.0-only"
+dist_files="https://github.com/apognu/tuigreet/archive/${version}.tar.gz>tuigreet-${version}.tar.gz"
+checksum="fee9bcbb52ff40778473af59d56577460a4194908da7dcc6f7f08af65fb53152"
+
+# crates.io is fetched at build time, as core's greetd does
+allow_network=yes
+
+use_flags="man"
+
+depends="greetd"
+make_depends="rust $(use_if man scdoc)"
+
+pre_build() {
+    export CARGO_HOME="$PWD/.cargo"
+}
+
+post_install() {
+    if use man; then
+        scdoc < contrib/man/tuigreet-1.scd > tuigreet.1
+        bman tuigreet.1
+    fi
+    # --remember keeps the last user here; greetd's greeter account owns it
+    bmkdir -m 0755 /var/cache/tuigreet
+    chown 68:68 "$DESTDIR/var/cache/tuigreet" 2>/dev/null || :
+    blicense LICENSE
+}
