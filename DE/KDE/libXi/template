@@ -1,0 +1,17 @@
+pkg_name=libXi
+version=1.8.2
+revision=1
+build_style=gnu-configure
+short_desc="X Input extension library"
+home_page="https://gitlab.freedesktop.org/xorg/lib/libxi"
+license="MIT"
+dist_files="https://www.x.org/releases/individual/lib/libXi-${version}.tar.xz"
+checksum="8f0acdd884dc928c6c8bc4b6bca1f4c67c726fdb03e30910c09bdb41fd841d3e"
+depends="libX11 libXext libXfixes"
+make_depends="libX11 libXext libXfixes pkgconf util-macros xorgproto"
+
+configure_args="--disable-static"
+
+post_install() {
+    blicense COPYING
+}

@@ -1,0 +1,17 @@
+pkg_name=libXtst
+version=1.2.5
+revision=1
+build_style=gnu-configure
+short_desc="X Record and XTest extension library"
+home_page="https://gitlab.freedesktop.org/xorg/lib/libxtst"
+license="MIT"
+dist_files="https://www.x.org/releases/individual/lib/libXtst-${version}.tar.xz"
+checksum="14daad01275697ffcacba237a3f1cf60cddfd0e5cfb25053c7a43fb282bf604c"
+depends="libX11 libXext libXi"
+make_depends="libX11 libXext libXi pkgconf util-macros xorgproto"
+
+configure_args="--disable-static"
+
+post_install() {
+    blicense COPYING
+}

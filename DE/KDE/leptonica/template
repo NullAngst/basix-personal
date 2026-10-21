@@ -1,0 +1,19 @@
+pkg_name=leptonica
+version=1.87.0
+revision=1
+build_style=gnu-configure
+short_desc="Image processing library (Tesseract)"
+home_page="http://www.leptonica.org"
+license="BSD-2-Clause"
+dist_files="https://github.com/DanBloomberg/leptonica/releases/download/${version}/leptonica-${version}.tar.gz"
+checksum="1c98a49635e8a91105e96d6ddc11b98d15b1457186f4b44cf014058f98ba6275"
+
+depends="giflib libjpeg-turbo libpng libwebp zlib"
+make_depends="giflib libjpeg-turbo libpng libwebp pkgconf zlib"
+
+configure_args="--disable-static --disable-programs --with-zlib --with-libpng --with-jpeg
+ --with-giflib --with-libwebp --without-libtiff --without-libopenjpeg"
+
+post_install() {
+    blicense leptonica-license.txt
+}

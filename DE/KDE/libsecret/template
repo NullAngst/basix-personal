@@ -1,0 +1,25 @@
+pkg_name=libsecret
+version=0.21.7
+revision=1
+build_style=meson
+short_desc="Secret Service D-Bus client library (KWallet, qtkeychain)"
+home_page="https://gitlab.gnome.org/GNOME/libsecret"
+license="LGPL-2.1-or-later"
+dist_files="https://download.gnome.org/sources/libsecret/${version%.*}/libsecret-${version}.tar.xz"
+checksum="80f06e57a120dec306a1de0ce89e663498c2115faa9a19baa89b4e6c11491a1a"
+
+depends="glib libgcrypt"
+make_depends="glib libgcrypt meson pkgconf gettext-tiny"
+
+configure_args="
+    -Dcrypto=libgcrypt
+    -Dintrospection=false
+    -Dvapi=false
+    -Dgtk_doc=false
+    -Dmanpage=false
+    -Dbash_completion=disabled
+    -Dtpm2=false"
+
+post_install() {
+    blicense COPYING
+}
