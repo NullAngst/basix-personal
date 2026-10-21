@@ -1,5 +1,10 @@
-# Weekly: run tools/kde-bump and open (or refresh) one pull request with the
-# result. Uses the workflow's own GITHUB_TOKEN and the REST API, no gh CLI.
+# Weekly: run DE/KDE/tools/kde-bump and open (or refresh) one pull request
+# with the result. Uses the workflow's own GITHUB_TOKEN and the REST API, no
+# gh CLI. kde-bump also fills an empty checksum in any hand-written template
+# anywhere in the repo (Utilities/kitty and so on).
+#
+# On every push and pull request that touches DE/KDE, the check job runs
+# kde-gen --check, so a hand edit to a generated template is caught.
 #
 # One repository setting is needed for the token to open pull requests:
 # Settings > Actions > General > Workflow permissions >
@@ -10,18 +15,31 @@ on:
   schedule:
     - cron: "17 5 * * 1"
   workflow_dispatch:
+  push:
+    paths: ["DE/KDE/**"]
+  pull_request:
+    paths: ["DE/KDE/**"]
 
 permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: kde-bump
-  cancel-in-progress: false
-
 jobs:
-  bump:
+  check:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generated templates match DE/KDE/manifest
+        run: sh DE/KDE/tools/kde-gen --check
+
+  bump:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    # one bump at a time; a second one waits instead of racing on the branch
+    concurrency:
+      group: kde-bump
+      cancel-in-progress: false
     env:
       BRANCH: kde-bump
     steps:
@@ -36,7 +54,7 @@ jobs:
       - name: Run kde-bump
         run: |
           rc=0
-          sh tools/kde-bump --report "$RUNNER_TEMP/report.md" || rc=$?
+          sh DE/KDE/tools/kde-bump --report "$RUNNER_TEMP/report.md" || rc=$?
           echo "BUMP_RC=$rc" >>"$GITHUB_ENV"
           # 1 means some downloads failed; what did work is still worth a PR
           [ "$rc" -le 1 ]
@@ -83,12 +101,12 @@ jobs:
             printf '%s\n' "$body"
           }
           {
-            echo "Weekly run of tools/kde-bump."
+            echo "Weekly run of DE/KDE/tools/kde-bump."
             echo
             cat "$RUNNER_TEMP/report.md"
             echo
             echo "Before merging: a minor release (Plasma 6.x to 6.y, Qt 6.x to 6.y) can need"
-            echo "new dependencies or refreshed patches in kde/patches/. A build on a Basix"
+            echo "new dependencies or refreshed patches in DE/KDE/patches/. A build on a Basix"
             echo "box is the real test."
           } >"$RUNNER_TEMP/body.md"
           title="kde: version and checksum bump ($(date -u +%Y-%m-%d))"
