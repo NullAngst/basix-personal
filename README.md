@@ -11,6 +11,7 @@ My bpm repository for Basix Linux, for anyone on Basix who wants what core doesn
 | `DE/KDE/` | KDE Plasma 6 on Wayland: Qt 6, KDE Frameworks, Plasma, Konsole, Dolphin, Kate, Ark, and the libraries and services they need (elogind, polkit, ...). Versions kept current by `DE/KDE/tools/kde-bump` | [DE/KDE/README.md](DE/KDE/README.md) |
 | `Network/wpa_supplicant/` | Wi-Fi, with an s6 service | [DE/KDE/README.md](DE/KDE/README.md#services) |
 | `Utilities/` | Single programs, one folder each (kitty and so on) | this file |
+| `Packaging/` | The request forms, reference, template skeleton, linter and bump scripts used to add and update packages here | [Packaging/README.md](Packaging/README.md) |
 
 ## How bpm finds packages
 
@@ -46,7 +47,7 @@ For Plasma there are a few more steps (use flags, services, greeter). They're in
 
 ## Adding a package
 
-Using kitty as the example. It depends on what you're packaging, so adapt the group folder and template to it.
+The easy way: fill in `Packaging/REQUEST.md` and hand it to Claude, as [Packaging/README.md](Packaging/README.md) describes. By hand, using kitty as the example. It depends on what you're packaging, so adapt the group folder and template to it.
 
 1. Make the folder, named exactly like the package: `mkdir -p Utilities/kitty`
 2. Write `Utilities/kitty/template`. Copy a similar template from core (`basix-packages`) as a start, since the build styles and helper functions are the same. Leave the checksum empty: `checksum=""`
@@ -62,7 +63,9 @@ Using kitty as the example. It depends on what you're packaging, so adapt the gr
 
 KDE updates itself. Every Monday the workflow runs `DE/KDE/tools/kde-bump`, which moves Qt, Frameworks, Plasma, Gear and the standalone KDE libraries to their newest stable releases, fills the checksums, regenerates the templates and opens a pull request. Review it and merge it. The details are in [DE/KDE/README.md](DE/KDE/README.md#keeping-versions-current).
 
-Everything else, `Utilities/` and the hand-written templates in `DE/KDE` included, is updated by hand. kde-bump doesn't know where kitty publishes releases. To bump one:
+Hand-written templates with a `watch` file next to them, in `Utilities/` or anywhere else, update themselves too. Every Tuesday the pkg-bump workflow runs `Packaging/pkg-bump`, which looks up each one's newest stable release, sets the version, writes the checksums and opens one pull request. How to write a watch file is in [Packaging/README.md](Packaging/README.md#keeping-packages-current).
+
+Everything without a watch file is updated by hand. To bump one:
 
 1. Change `version=` in its template, and set `revision=1`.
 2. Empty the checksum: `checksum=""`
@@ -70,14 +73,16 @@ Everything else, `Utilities/` and the hand-written templates in `DE/KDE` include
 4. Run the workflow (or wait for Monday) and merge the pull request, which fills the new checksum.
 5. Build it on Basix: `doas bpm pull && doas bpm install kitty`
 
-## The workflow
+## The workflows
 
 `.github/workflows/kde-bump.yml` does two jobs:
 
 - Every Monday and on demand (Actions > kde-bump > Run workflow): runs `DE/KDE/tools/kde-bump`, which bumps KDE and fills every empty checksum in the repo, commits to a `kde-bump` branch and opens one pull request, or refreshes the open one, with a table of what changed.
 - On every push or pull request that touches `DE/KDE`: runs `DE/KDE/tools/kde-gen --check`, which fails if a generated KDE template was edited by hand instead of through `DE/KDE/manifest`.
 
-It uses the workflow's own token and the GitHub REST API, no gh CLI. One repository setting is needed for that token to open pull requests: Settings > Actions > General > Workflow permissions > "Allow GitHub Actions to create and approve pull requests". Without it the run fails at the last step, after pushing the branch, and the log says which setting to turn on.
+`.github/workflows/pkg-bump.yml` bumps templates that have a watch file, and `.github/workflows/packaging.yml` lints templates on every push and checks weekly whether bpm changed under `Packaging/`. Both are described in [Packaging/README.md](Packaging/README.md#workflows).
+
+All of them use the workflow's own token and the GitHub REST API, no gh CLI. One repository setting is needed for that token to open pull requests: Settings > Actions > General > Workflow permissions > "Allow GitHub Actions to create and approve pull requests". Without it the run fails at the last step, after pushing the branch, and the log says which setting to turn on.
 
 ## Checksums
 

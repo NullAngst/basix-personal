@@ -1,0 +1,295 @@
+# template.skel - commented skeleton for a bpm 0.9 package template
+#
+# Copy it to <Group>/<pkg>/template, fill it in, delete every comment and
+# commented-out line that doesn't apply. Core templates carry almost no
+# comments, so the finished file should look like the ones in basix-packages.
+#
+#   mkdir -p Utilities/foo && cp Packaging/template.skel Utilities/foo/template
+#
+# How bpm treats this file:
+#   - It is SOURCED by /bin/sh (busybox ash on Basix) under `set -eu`. POSIX sh
+#     only: no [[ ]], no arrays, no `function` keyword, no ${var//x/y}.
+#   - It gets sourced many times per run (dependency walks, use flag checks,
+#     inside and outside the sandbox). The top level must only assign
+#     variables and define functions. Never run commands there.
+#   - `set -u` is on: reading an unset variable kills the build. Use
+#     ${var:-} for anything that might be unset.
+#   - Everything the build needs lives in this directory:
+#       <pkg>/template      this file
+#       <pkg>/patches/      *.patch and *.diff, applied in sorted order, -p1
+#       <pkg>/files/        anything else (s6 services, configs, pam files),
+#                           reachable as $FILESDIR inside the functions
+#       <pkg>/watch         optional, where pkg-bump looks for new releases
+#                           (see GUIDE.md, Versions). bpm ignores it.
+#   - NEVER name this skeleton (or anything in Packaging/) "template". bpm and
+#     kde-bump both treat any file called template as a package.
+
+# ---- identity -------------------------------------------------------------
+
+# Must match the directory name exactly, and be unique across every repo in
+# repos.conf (the first repo that has the name wins, silently).
+pkg_name=foo
+
+# Upstream version. No spaces, no slashes. The archive is named
+# <pkg>@<version>-<revision>.tar.zst, and bpm rebuilds when this changes.
+version=1.2.3
+
+# Start at 1. Bump it when the template changes but the version doesn't
+# (new flag, new patch, fixed install). Reset to 1 on every version bump.
+revision=1
+
+# One of: gnu-configure (the default if unset), configure, gnu-makefile,
+# cmake, meson, cargo, go, python3-pep517, python3-module, perl-module,
+# perl-ModuleBuild, qmake, scons, waf, waf3, zig-build, ruby-module, gemspec,
+# R-cran, haskell-stack, fetch, meta, custom. GUIDE.md lists what each runs.
+build_style=meson
+
+# One line, no trailing period, starts with a capital. Same style as core.
+short_desc="Short description of what foo does"
+home_page="https://example.org/foo"
+
+# SPDX identifier. Use "A OR B" / "A AND B" for multiple licenses.
+license="MIT"
+
+# ---- sources ---------------------------------------------------------------
+
+# Space separated. Each entry is one of:
+#   https://host/foo-1.2.3.tar.xz                  saved as foo-1.2.3.tar.xz
+#   https://host/archive/v${version}.tar.gz>foo-${version}.tar.gz
+#                                                   saved under the name after >
+#                                                   (always rename GitHub and
+#                                                   Codeberg tag archives, their
+#                                                   default names collide)
+#   git+https://host/foo.git#v1.2.3                 git checkout of a tag or
+#                                                   commit, its checksum is SKIP
+#   file:///absolute/path/foo.tar.gz                local file
+# .tar, .tar.*, .tgz, .txz, .tbz2 and .zip get extracted, anything else is
+# copied into the build dir as is.
+dist_files="https://example.org/releases/foo-${version}.tar.xz"
+
+# BLAKE3 of each dist_files entry, same order, SKIP for git+ entries. Keep it
+# on ONE line: `bpm checksum -w` and the kde-bump workflow only rewrite a
+# one-line checksum, and kde-bump only fills the exact text checksum="".
+# Leave it as checksum="" if it can't be computed yet.
+checksum=""
+
+# Directory the source unpacks to, relative to the build dir. Defaults to
+# $pkg_name-$version. Set it whenever the archive's top dir is anything else
+# (Codeberg: "foo", sourcehut: "foo-v1.2.3"). bpm 0.9.3's auto-detect runs
+# before extraction and never fires, and a wrong value makes bpm build from
+# the parent dir without saying so.
+#wrk_src="foo-$version"
+
+# yes = extract into a fresh $wrk_src dir, for archives with no top-level dir.
+#create_wrk_src=yes
+
+# Distfile names (as saved) that must not be extracted, just copied in.
+#skip_extract="foo-data.bin"
+
+# Run the configure/build/check/install phases from this subdir of wrk_src
+# (created if missing). Handy for projects whose build lives in a subfolder.
+#build_wrk_src=build-dir
+
+# Passed to patch(1) for everything in patches/. Default -p1.
+#patch_args="-p0"
+
+# ---- dependencies ----------------------------------------------------------
+
+# Runtime dependencies: what has to be installed for foo to run. Basix
+# package names, not upstream names. Continuation lines start with one space.
+depends="libfoo zlib"
+
+# Build dependencies. With BPM_BUILDROOT set (the stock bpm.conf sets it),
+# the build root holds ONLY the base packages plus these and their runtime
+# deps. Nothing from the host leaks in. So this lists every build tool AND
+# every library foo links against, which means most of depends shows up here
+# again. Base already has: baselayout musl busybox make binutils gcc
+# linux-headers fortify-headers pigz xz bzip2 certs pkgconf b3sum zstd.
+# (pkgconf is in base, core still lists it; either way works.)
+make_depends="libfoo meson pkgconf zlib"
+
+# Packages that must have been built with a certain use flag. bpm stops with
+# an error telling the user what to add to package.use. It enables nothing.
+#use_depends="mesa:wayland"
+
+# ---- use flags -------------------------------------------------------------
+
+# Every optional feature this template tests with use/use_if/usev. Plain name
+# = on by default, -name = off by default. The global BPM_USE in bpm.conf and
+# then /etc/bpm/package.use override these, last one wins. The stock bpm.conf
+# has: BPM_USE="zlib ssl man doc -x11 -wayland -pulseaudio -bluetooth -nls"
+# so a GUI package whose template defaults to wayland still builds without
+# it until the user turns wayland on. Say so in the request report.
+# Only flags declared here are recorded in the built package, so a flag you
+# test but don't declare won't trigger a rebuild when the user flips it.
+use_flags="man -doc wayland -x11"
+
+# ---- build knobs -----------------------------------------------------------
+
+# Extra args appended to the style's configure step (meson setup, cmake,
+# ./configure, qmake, waf configure, perl Makefile.PL / Build.PL, setup.rb).
+# Multi-line is fine, the shell splits on whitespace. Avoid args whose values
+# contain spaces: they get split too.
+configure_args="
+    -Dtests=false
+    $(use_if man -Dman=enabled -Dman=disabled)
+    $(use_if wayland -Dwayland=enabled -Dwayland=disabled)
+    $(use_if x11 -Dx11=enabled -Dx11=disabled)"
+
+# Appended to the build / check / install commands of most styles. meson
+# ignores make_install_args.
+#make_build_args=""
+#make_check_args=""
+#make_install_args=""
+
+# Make targets (gnu-configure, configure, gnu-makefile).
+#make_build_target=""
+#make_check_target="check"
+#make_install_target="install"
+
+# gnu-configure and configure: path to the configure script.
+#configure_script="./configure"
+
+# Command used as $make_cmd in the make-based styles. Default make.
+#make_cmd=gmake
+
+# cmake: CMAKE_BUILD_TYPE, default Release.
+#cmake_build_type=Release
+
+# meson: extra args, placed before configure_args.
+#meson_args=""
+
+# cargo: args for cargo build and cargo install, and the crate path to
+# install from in a workspace.
+#cargo_args="--features foo"
+#cargo_install_path="crates/foo"
+
+# go: what to build (default ./...), build tags, ldflags (one string), and
+# -mod= mode (vendor when the tarball ships vendor/).
+#go_package="./cmd/foo"
+#go_build_tags="netgo"
+#go_ldflags="-s -w -X main.version=$version"
+#go_mod_mode=vendor
+
+# qmake binary name, zig build args, gemspec glob, stack resolver.
+#qmake_cmd=qmake6
+#zig_build_args="-Doptimize=ReleaseSafe"
+#gem_spec="foo.gemspec"
+#stackage="lts-22.0"
+
+# yes = the build may reach the network. Off by default, the build runs in
+# its own network namespace. cargo, go and haskell-stack need this unless
+# their dependencies are vendored into the source tarball.
+#allow_network=yes
+
+# yes = don't strip binaries (Go binaries built with -s -w, anything that
+# breaks when stripped).
+#no_strip=yes
+
+# yes = keep libtool .la files, which bpm deletes by default.
+#keep_libtool=yes
+
+# ---- install-time behavior -------------------------------------------------
+
+# Files outside /etc that bpm should treat as config: preserved on upgrade
+# when edited, new version written as <file>.new. Everything under /etc is
+# already treated that way.
+#config_files="/var/lib/foo/foo.conf"
+
+# Paths added to /etc/shells on install, removed on removal.
+#register_shell="/usr/bin/foo"
+
+# System accounts and groups, created at install time. Ids are optional,
+# bpm allocates one from 100-999 when an id is left out. Unset fields
+# default to: descr = the name, homedir /var/empty, shell /bin/false.
+#system_accounts="foo"
+#foo_uid=
+#foo_gid=
+#foo_descr="foo daemon"
+#foo_homedir="/var/lib/foo"
+#foo_shell="/bin/false"
+#foo_groups="video audio"
+#system_groups="foogroup"
+#foogroup_gid=
+
+# Private helper variables start with an underscore so they can't collide
+# with anything bpm reads.
+#_commit=0123456789abcdef
+
+# ---- phase functions -------------------------------------------------------
+#
+# Order: fetch (outside the sandbox) > extract > patch > configure > build >
+# check (only when BPM_CHECK=1) > install. For configure, build, check and
+# install bpm runs pre_<phase>, then do_<phase> if defined OR the style's own
+# step, then post_<phase>. extract, patch and fetch only take do_<phase>,
+# there is no pre_patch or post_extract and bpm never calls them.
+#
+# Everything runs from $build_dir/$wrk_src (or build_wrk_src), as uid 0
+# inside the sandbox. Useful variables:
+#   $DESTDIR     staging root, what ends up in the package
+#   $FILESDIR    this package's files/ dir
+#   $PATCHESDIR  this package's patches/ dir
+#   $SOURCEDIR   where the dist_files were downloaded
+#   $build_dir   the build dir that holds $wrk_src
+#   $make_cmd    make (or the template's override)
+#   $make_jobs   -j<BPM_JOBS>, MAKEFLAGS carries the same
+#   $BPM_JOBS    job count
+#   $CC $CXX $CFLAGS $CXXFLAGS $LDFLAGS (hardened defaults from bpm.conf)
+#   $pkg_name $version $revision
+# HOME is /root inside the build root. LC_ALL=C.
+#
+# The function's exit status counts: the whole build runs under set -e, so a
+# function whose LAST command is `use doc && bdoc README` fails the build when
+# doc is off. End such functions with `:` or use an if block.
+
+#pre_configure() {
+#    export XML_CATALOG_FILES=/usr/share/xsl/docbook/catalog.xml
+#}
+
+#pre_build() {
+#    # cargo: keep the registry inside the build tree
+#    export CARGO_HOME="$PWD/.cargo"
+#}
+
+#do_build() {
+#    $make_cmd $make_jobs CC="$CC" PREFIX=/usr
+#}
+
+#do_install() {
+#    bbin foo
+#    bman foo.1
+#}
+
+post_install() {
+    # install helpers, all paths are relative to $DESTDIR:
+    #   bbin <file> [newname]             0755 /usr/bin
+    #   blib <file> [newname]             0644 /usr/lib
+    #   blibexec <file> [newname]         0755 /usr/libexec/$pkg_name
+    #   binclude <file> [newname]         0644 /usr/include
+    #   bpkgconfig <file> [newname]       0644 /usr/lib/pkgconfig
+    #   bconf <file> [newname]            0644 /etc
+    #   blicense <file> [newname]         0644 /usr/share/licenses/$pkg_name
+    #   bdoc <file> [subdir]              0644 /usr/share/doc/$pkg_name[/subdir]
+    #   bdata <file> [subdir]             0644 /usr/share/$pkg_name[/subdir]
+    #   bman <file.N> [newname]           0644 /usr/share/man/manN
+    #   bcompletion <file> bash|zsh|fish [name]
+    #   binstall <file> <mode> <dir> [newname]
+    #   bmkdir [-m mode] <dir>...
+    #   bcopy <src>... <dir>              recursive, globs ok
+    #   bmove <src> <dest>                both inside DESTDIR
+    #   bln <target> <linkname>           symlink, target written as given
+    #   brm <path>...                     delete inside DESTDIR
+    #   bsed <expr> <file>...             in-place sed on files in the tree
+    #   bextract <distfile> [subdir]      unpack an extra distfile by hand
+    #   die "msg"   msg/sub/warn "msg"
+    use doc || brm "/usr/share/doc/$pkg_name"
+    blicense LICENSE
+
+    # s6 service, the way core ships greetd. files/sources/foo/ holds
+    # type, run, dependencies.d/ and producer-for; files/sources/foo-log/
+    # holds the logger. Add services to use_flags when this is used.
+    #if use services; then
+    #    bcopy "$FILESDIR/sources/." /usr/share/s6-rc/sources
+    #    find "$DESTDIR/usr/share/s6-rc/sources" -type f -name run -exec chmod 0755 {} +
+    #fi
+}

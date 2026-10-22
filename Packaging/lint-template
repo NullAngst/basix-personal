@@ -1,0 +1,576 @@
+#!/usr/bin/env bash
+#
+# lint-template - static checks for bpm 0.9 package templates
+#
+# Catches the mistakes that make bpm refuse a template or silently do the
+# wrong thing: bad repo layout, names that don't match, variables bpm doesn't
+# read, checksum shape, missing build tools, bashisms, phase functions that
+# fail under set -e, dependency names that don't exist anywhere.
+#
+# It cannot tell whether the software configures, compiles on musl or runs.
+# Only `bpm build` on Basix answers that.
+#
+# usage: lint-template [--repo DIR] [--core DIR] [-q] [TEMPLATE|DIR ...]
+#
+set -uo pipefail
+
+prog=${0##*/}
+script_dir=$(cd "$(dirname "$0")" && pwd)
+
+usage() {
+    printf 'usage: %s [--repo DIR] [--core DIR] [-q] [TEMPLATE|DIR ...]\n\n' "$prog"
+    printf '  --repo DIR   repository root the templates live in (default: the git\n'
+    printf '               checkout this script is in, else its parent folder)\n'
+    printf '  --core DIR   a basix-packages checkout, enables dependency name checks\n'
+    printf '  -q           print errors only\n'
+    printf '  --print-known  print the bpm variables, hooks and styles this linter\n'
+    printf '               knows, one list per line (check-bpm compares them to bpm)\n'
+    printf '  no paths     lint every template in the repository\n'
+    exit "${1:-2}"
+}
+
+repo='' core='' quiet=0 print_known=0
+targets=()
+while (($#)); do
+    case $1 in
+        --repo) [[ $# -ge 2 ]] || usage; repo=$2; shift 2 ;;
+        --core) [[ $# -ge 2 ]] || usage; core=$2; shift 2 ;;
+        -q|--quiet) quiet=1; shift ;;
+        --print-known) print_known=1; shift ;;
+        -h|--help) usage 0 ;;
+        --) shift; targets+=("$@"); break ;;
+        -*) printf '%s: unknown option %s\n' "$prog" "$1" >&2; usage ;;
+        *) targets+=("$1"); shift ;;
+    esac
+done
+
+for tool in sh find awk grep sed sort; do
+    command -v "$tool" >/dev/null 2>&1 || { printf '%s: %s is required\n' "$prog" "$tool" >&2; exit 2; }
+done
+
+if [[ -z $repo ]]; then
+    repo=$(git -C "$script_dir" rev-parse --show-toplevel 2>/dev/null) || repo=$script_dir/..
+fi
+repo=$(cd "$repo" 2>/dev/null && pwd) || { printf '%s: no such repo dir\n' "$prog" >&2; exit 2; }
+if [[ -n $core ]]; then
+    core=$(cd "$core" 2>/dev/null && pwd) || { printf '%s: no such core dir\n' "$prog" >&2; exit 2; }
+fi
+
+# ---- what bpm 0.9.3 knows (lib/common.sh, lib/build.sh, lib/style) ---------
+
+TMPL_VARS='pkg_name version revision short_desc maintainer license home_page
+ build_style configure_script configure_args make_cmd make_build_args
+ make_build_target make_install_args make_install_target make_check_args
+ make_check_target meson_args cmake_build_type qmake_cmd zig_build_args
+ cargo_args cargo_install_path gem_spec stackage
+ go_import_path go_package go_build_tags go_ldflags go_mod_mode
+ dist_files checksum skip_extract wrk_src build_wrk_src create_wrk_src patch_args
+ depends make_depends use_depends conflicts provides
+ use_flags allow_network no_strip keep_libtool register_shell
+ system_accounts system_groups config_files'
+
+# space padded on one line each, so " $name " matching works
+HOOKS=" $(printf '%s ' do_fetch do_extract do_patch \
+    pre_configure do_configure post_configure pre_build do_build post_build \
+    pre_check do_check post_check pre_install do_install post_install)"
+
+STYLES=" $(printf '%s ' R-cran cargo cmake configure custom fetch gemspec gnu-configure \
+    gnu-makefile go haskell-stack meson meta perl-ModuleBuild perl-module \
+    python3-module python3-pep517 qmake ruby-module scons waf waf3 zig-build)"
+
+TMPL_VARS_PAD=" $(tr -s '[:space:]' ' ' <<<"$TMPL_VARS") "
+
+if ((print_known)); then
+    printf 'vars%s\n' "${TMPL_VARS_PAD% }"
+    printf 'hooks%s\n' "${HOOKS% }"
+    printf 'styles%s\n' "${STYLES% }"
+    exit 0
+fi
+
+declare -A HINT=(
+    [use_default]='bpm 0.9 has no use_default, defaults live in use_flags ("-flag" is off)'
+    [host_make_depends]='bpm 0.9 never reads it, build tools go in make_depends'
+    [hostmakedepends]='bpm 0.9 never reads it, build tools go in make_depends'
+    [makedepends]='the name is make_depends'
+    [distfiles]='the name is dist_files'
+    [homepage]='the name is home_page'
+    [checksums]='the name is checksum'
+    [wrksrc]='the name is wrk_src'
+    [build_wrksrc]='the name is build_wrk_src'
+    [short_description]='the name is short_desc'
+    [bpm_sccache]='only the frankenbasix bpm fork reads this'
+)
+
+declare -A BADHOOK=(
+    [pre_patch]=1 [post_patch]=1 [pre_extract]=1 [post_extract]=1
+    [pre_fetch]=1 [post_fetch]=1 [do_clean]=1 [pre_package]=1 [post_package]=1
+)
+
+# ---- output -----------------------------------------------------------------
+
+n_err=0 n_warn=0 n_files=0
+cur=''
+E() { printf '%s: E: %s\n' "$cur" "$*"; n_err=$((n_err + 1)); }
+W() { n_warn=$((n_warn + 1)); ((quiet)) || printf '%s: W: %s\n' "$cur" "$*"; }
+N() { ((quiet)) || printf '%s: note: %s\n' "$cur" "$*"; }
+
+# ---- package indexes ----------------------------------------------------------
+
+# name -> paths, for the repo being linted (only the depths bpm searches)
+declare -A REPO_PKGS=() CORE_PKGS=()
+while IFS= read -r t; do
+    d=${t%/template}; n=${d##*/}
+    REPO_PKGS[$n]+="${REPO_PKGS[$n]:+ }${t#"$repo"/}"
+done < <(find "$repo" -mindepth 2 -maxdepth 4 -path '*/.git' -prune -o -type f -name template -print | sort)
+
+if [[ -n $core ]]; then
+    while IFS= read -r t; do
+        d=${t%/template}; n=${d##*/}
+        CORE_PKGS[$n]=${t#"$core"/}
+    done < <(find "$core" -mindepth 2 -maxdepth 4 -path '*/.git' -prune -o -type f -name template -print)
+fi
+
+# ---- evaluation ---------------------------------------------------------------
+
+# source a template the way bpm does (sh, set -eu, bpm's use helpers) and dump
+# every bpm variable as NUL separated name/value pairs; $2 is the USE string
+read -r -d '' EVAL_SH <<'EOS'
+set -eu
+use() {
+    __ur=1
+    for __uf in ${use_flags:-} ${USE:-}; do
+        case $__uf in
+            "$1"|"+$1") __ur=0 ;;
+            "-$1") __ur=1 ;;
+        esac
+    done
+    return $__ur
+}
+usev() { if use "$1"; then printf '%s' "${2:-$1}"; fi; }
+use_if() { if use "$1"; then printf '%s' "$2"; else printf '%s' "${3:-}"; fi; }
+use_enable() { if use "$1"; then printf -- '--enable-%s'  "${2:-$1}"; else printf -- '--disable-%s' "${2:-$1}"; fi; }
+use_with() { if use "$1"; then printf -- '--with-%s' "${2:-$1}"; else printf -- '--without-%s' "${2:-$1}"; fi; }
+use_bool() { if use "$1"; then printf -- '-D%s=true' "${2:-$1}"; else printf -- '-D%s=false' "${2:-$1}"; fi; }
+use_cmake() { if use "$1"; then printf -- '-D%s=ON' "${2:-$1}"; else printf -- '-D%s=OFF' "${2:-$1}"; fi; }
+die() { printf 'template called die: %s\n' "$*" >&2; exit 1; }
+msg() { :; }; sub() { :; }; warn() { :; }
+pkg_name=$1 revision=1 build_style=gnu-configure USE=$2
+. "$3"
+for __v in $4; do
+    eval "__x=\${$__v-@@UNSET@@}"
+    printf '%s\0%s\0' "$__v" "$__x"
+done
+EOS
+
+declare -A V=()
+# eval_tmpl <name> <USE> <file> -> fills V[], returns sh's status, errors in $EVAL_ERR
+EVAL_ERR=''
+eval_tmpl() {
+    V=()
+    local out errf rc k val
+    errf=$(mktemp)
+    out=$(sh -c "$EVAL_SH" lint "$1" "$2" "$3" "$TMPL_VARS" 2>"$errf" | tr '\0' '\1'; exit "${PIPESTATUS[0]}")
+    rc=$?
+    EVAL_ERR=$(head -c 600 "$errf"); rm -f "$errf"
+    ((rc == 0)) || return "$rc"
+    while [[ -n $out ]]; do
+        k=${out%%$'\1'*}; out=${out#*$'\1'}
+        val=${out%%$'\1'*}; out=${out#*$'\1'}
+        [[ $val == '@@UNSET@@' ]] || V[$k]=$val
+    done
+    return 0
+}
+
+# split on whitespace without globbing, one word per line, nothing for ""
+words() {
+    local s=${1:-} w
+    set -f
+    for w in $s; do printf '%s\n' "$w"; done
+    set +f
+}
+
+# ---- the checks ---------------------------------------------------------------
+
+lint_one() {
+    local t=$1 abs rel dir name depth
+    abs=$(cd "$(dirname "$t")" && pwd)/template
+    dir=${abs%/template}; name=${dir##*/}
+    rel=${abs#"$repo"/}
+    cur=$rel
+    n_files=$((n_files + 1))
+
+    # layout
+    if [[ $rel == "$abs" ]]; then
+        W "not inside $repo, layout checks skipped"
+    else
+        depth=$(awk -F/ '{print NF-1}' <<<"$rel")
+        ((depth <= 3)) || E "$depth folders deep, bpm only looks 1 to 3 deep (<repo>/<pkg>, <repo>/<group>/<pkg>, <repo>/<group>/<sub>/<pkg>), so this package does not exist for bpm"
+        [[ $rel == Packaging/* ]] && E "a file named template inside Packaging/ is a package to bpm and kde-bump, rename it"
+        local dups=${REPO_PKGS[$name]:-}
+        if [[ $dups == *' '* ]]; then
+            E "package name $name is used more than once in this repo ($dups), bpm takes the shallowest, then the first in glob order, and ignores the rest"
+        fi
+    fi
+    [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]] || E "folder name '$name' is not a sensible package name"
+
+    # syntax as POSIX sh
+    local synerr
+    if ! synerr=$(sh -n "$abs" 2>&1); then
+        E "sh -n fails: $synerr"
+        return
+    fi
+
+    # body: the template without comment lines (keeps strings, for use flag
+    # scanning). code: same line numbers, but comment lines, heredoc bodies
+    # and the inside of multi-line "..." strings are blanked, so text in
+    # strings never looks like an assignment, a function or a bashism
+    local body code
+    body=$(sed 's/^[[:space:]]*#.*$//' "$abs")
+    code=$(awk '
+        BEGIN { inq = 0; hd = "" }
+        {
+            line = $0
+            if (hd != "") {
+                t = line; if (hdtab) sub(/^\t+/, "", t)
+                if (t == hd) hd = ""
+                print ""; next
+            }
+            tmp = line; gsub(/\047[^\047]*\047/, "", tmp); gsub(/\\"/, "", tmp)
+            nq = gsub(/"/, "", tmp)
+            if (inq) { if (nq % 2 == 1) inq = 0; print ""; next }
+            if (line ~ /^[ \t]*#/) { print ""; next }
+            if (match(line, /<<-?[ \t]*[\047"]?[A-Za-z_][A-Za-z0-9_]*[\047"]?/)) {
+                d = substr(line, RSTART, RLENGTH); hdtab = (d ~ /^<<-/)
+                sub(/^<<-?[ \t]*[\047"]?/, "", d); sub(/[\047"]$/, "", d); hd = d
+            }
+            if (nq % 2 == 1) inq = 1
+            print line
+        }' "$abs")
+
+    # evaluate with the template's own defaults
+    if ! eval_tmpl "$name" '' "$abs"; then
+        E "sourcing it the way bpm does (sh, set -eu) fails: ${EVAL_ERR:-no message}"
+        return
+    fi
+    declare -A D=()
+    local k
+    for k in "${!V[@]}"; do D[$k]=${V[$k]}; done
+
+    # and with every declared flag on, to see every dependency name
+    local f allon=''
+    for f in $(words "${D[use_flags]:-}"); do allon+=" ${f#[-+]}"; done
+    declare -A A=()
+    if eval_tmpl "$name" "$allon" "$abs"; then
+        for k in "${!V[@]}"; do A[$k]=${V[$k]}; done
+    else
+        E "fails to source with every use flag on (USE=\"$allon\"): ${EVAL_ERR:-no message}"
+        for k in "${!D[@]}"; do A[$k]=${D[$k]}; done
+    fi
+
+    # identity
+    [[ ${D[pkg_name]:-} == "$name" ]] || E "pkg_name=${D[pkg_name]:-} but the folder is $name, bpm refuses this"
+    [[ -n ${D[version]:-} ]] || E "no version, bpm refuses this"
+    [[ -z ${D[version]:-} || ${D[version]} =~ ^[A-Za-z0-9._+~-]+$ ]] ||
+        E "version '${D[version]}' has characters that break the archive name"
+    [[ ${D[revision]:-} =~ ^[0-9]+$ ]] || E "revision '${D[revision]:-}' is not a number"
+    local style=${D[build_style]:-gnu-configure}
+    [[ $STYLES == *" $style "* ]] || E "unknown build_style '$style'"
+    grep -q '^build_style=' "$abs" || N "no build_style line, bpm defaults to gnu-configure"
+    local req
+    for req in short_desc home_page license; do
+        [[ -n ${D[$req]:-} ]] || W "$req is empty"
+    done
+
+    # variables bpm doesn't read
+    local acct_fields='' a s
+    for a in $(words "${D[system_accounts]:-} ${D[system_groups]:-} ${A[system_accounts]:-} ${A[system_groups]:-}"); do
+        for s in uid gid descr homedir shell groups; do acct_fields+=" ${a}_$s"; done
+    done
+    local var
+    while IFS= read -r var; do
+        [[ -z $var || $var == _* ]] && continue
+        [[ "$TMPL_VARS_PAD$acct_fields " == *" $var "* ]] && continue
+        if [[ -n ${HINT[$var]:-} ]]; then
+            W "$var: ${HINT[$var]}"
+        elif [[ $var =~ ^[A-Z][A-Z0-9_]*$ ]]; then
+            grep -qE "^[[:space:]]*export([[:space:]]+[A-Za-z_][A-Za-z0-9_]*)*[[:space:]]+$var([[:space:]=]|\$)" <<<"$code" ||
+                W "$var is set at the top level but never exported, the build won't see it (export it in a pre_ function)"
+        else
+            W "$var is not a bpm variable, bpm ignores it (prefix private helpers with _)"
+        fi
+    done < <(sed -n 's/^\([A-Za-z_][A-Za-z0-9_]*\)=.*/\1/p' <<<"$code" | sort -u)
+    [[ -n ${D[maintainer]:-}${D[conflicts]:-}${D[provides]:-} ]] &&
+        N "maintainer, conflicts and provides are accepted but bpm 0.9 does nothing with them"
+
+    # functions
+    local fns fn
+    fns=$(sed -n 's/^[[:space:]]*\([A-Za-z_][A-Za-z0-9_]*\)[[:space:]]*()[[:space:]]*.*/\1/p' <<<"$code" | sort -u)
+    for fn in $fns; do
+        [[ $HOOKS == *" $fn "* || $fn == _* ]] && continue
+        if [[ -n ${BADHOOK[$fn]:-} ]]; then
+            E "$fn() is not a bpm hook and never runs (only pre_/do_/post_ for configure, build, check, install, plus do_fetch, do_extract, do_patch)"
+        else
+            N "$fn() is not a bpm hook, fine if it is your own helper (core style: prefix with _)"
+        fi
+    done
+
+    # last statement of a phase function failing under set -e
+    local hit
+    while IFS= read -r hit; do
+        [[ -n $hit ]] && W "line ${hit%%:*}: a function ends with '${hit#*:}', when that test is false the function returns non-zero and set -e fails the build, end it with ':' or use if"
+    done < <(awk -v T='^(![ \t]*)?(use|test|have|\\[)[ \t].*&&' '
+        function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
+        /^[ \t]*#/ { next }
+        /^[A-Za-z_][A-Za-z0-9_]*[ \t]*\(\)[ \t]*\{.*\}[ \t]*$/ {
+            s = $0; sub(/^[^{]*\{/, "", s); sub(/\}[ \t]*$/, "", s)
+            n = split(s, parts, ";"); last = ""
+            for (i = n; i >= 1; i--) { p = trim(parts[i]); if (p != "") { last = p; break } }
+            if (last ~ T && last !~ /\|\|/) print NR ":" last
+            next
+        }
+        /^[A-Za-z_][A-Za-z0-9_]*[ \t]*\(\)[ \t]*\{[ \t]*$/ { infn = 1; last = ""; lastno = 0; next }
+        infn && /^\}/ {
+            if (last ~ T && last !~ /\|\|/) print lastno ":" last
+            infn = 0; next
+        }
+        infn { l = trim($0); if (l != "") { last = l; lastno = NR } }
+    ' "$abs")
+
+    # bashisms (bpm sources this with busybox ash on Basix)
+    local pat what
+    while IFS='|' read -r pat what; do
+        if grep -nE -- "$pat" <<<"$code" >/dev/null; then
+            W "$what: line $(grep -nE -- "$pat" <<<"$code" | head -n 1 | cut -c1-90)"
+        fi
+    done <<'EOP'
+\[\[|[[ ]] is bash, use [ ]
+^[[:space:]]*function[[:space:]]|function keyword is bash, use name() {
+\$\{[A-Za-z_][A-Za-z0-9_]*//|${var//a/b} is bash, use sed or case
+\$\{[A-Za-z_][A-Za-z0-9_]*:( -)?[0-9]|${var:offset} is bash
+<<<|<<< is bash
+^[[:space:]]*source[[:space:]]|source is bash, use .
+echo -e|echo -e is not portable, use printf
+^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*\+?=\(|arrays are bash
+\[ [^]]*==|== inside [ ] is bash, use =
+EOP
+
+    # sources and checksums
+    local -a dist sums
+    mapfile -t dist < <(words "${D[dist_files]:-}")
+    mapfile -t sums < <(words "${D[checksum]:-}")
+    local nd=${#dist[@]} ns=${#sums[@]} ck_lines one_line
+    ck_lines=$(grep -c '^checksum=' "$abs")
+    one_line=$(grep -cE '^checksum="[^"]*"[[:space:]]*$' "$abs")
+    if ((ck_lines > 1)); then
+        E "checksum is assigned $ck_lines times"
+    elif ((ck_lines == 1 && one_line == 0)); then
+        W "checksum spans several lines or isn't double quoted, bpm checksum -w and kde-bump only rewrite a one-line checksum=\"...\""
+    fi
+
+    if [[ $style == meta ]]; then
+        ((nd == 0)) || N "meta package with dist_files, they get fetched for nothing"
+    elif ((nd == 0)); then
+        [[ $style == custom ]] || W "no dist_files"
+    fi
+
+    if ((nd > 0 && ns == 0)); then
+        if grep -qx 'checksum=""' "$abs"; then
+            W "checksum is empty, bpm won't build this until it's filled (bpm checksum -w $name, or the kde-bump workflow)"
+        else
+            E "checksum is empty and not written as checksum=\"\", so kde-bump won't fill it and bpm won't build it"
+        fi
+    elif ((nd != ns)); then
+        E "$nd dist_files entries but $ns checksums, bpm needs one per entry in the same order (SKIP for git+)"
+    fi
+
+    local i e sum saved
+    declare -A seen=()
+    for ((i = 0; i < nd; i++)); do
+        e=${dist[i]}
+        case $e in
+            *'>'*) saved=${e##*>} ;;
+            git+*) saved=${e%%#*}; saved=${saved%.git}; saved=${saved##*/} ;;
+            *) saved=${e%%\?*}; saved=${saved##*/} ;;
+        esac
+        [[ -n ${seen[$saved]:-} ]] && E "two dist_files entries save to the same file name '$saved', rename one with >"
+        seen[$saved]=1
+        case $e in
+            git+*)
+                [[ $e == *'#'* ]] || W "git source with no #tag or #commit follows HEAD, bpm won't notice upstream changes"
+                ;;
+            https://*|http://*|file://*|ftp://*) ;;
+            *) E "dist_files entry '$e' is not https://, http://, ftp://, file:// or git+" ;;
+        esac
+        ((i < ns)) || continue
+        sum=${sums[i]}
+        if [[ $e == git+* ]]; then
+            [[ $sum == SKIP ]] || W "checksum slot $((i + 1)) belongs to a git source, write SKIP there"
+        elif [[ $sum == SKIP ]]; then
+            W "checksum slot $((i + 1)) is SKIP, so ${saved} is never verified"
+        elif [[ ! $sum =~ ^[0-9a-f]+$ ]]; then
+            E "checksum slot $((i + 1)) '$sum' is not lowercase hex"
+        elif ((${#sum} < 64)); then
+            E "checksum slot $((i + 1)) is ${#sum} characters, a BLAKE3 sum is 64"
+        elif ((${#sum} > 64)); then
+            W "checksum slot $((i + 1)) is ${#sum} characters, bpm only compares the first 64, trim it"
+        fi
+    done
+
+    # style specific
+    local md
+    md=" $(words "${D[make_depends]:-}" | tr '\n' ' ') "
+    need() {
+        local p
+        for p; do
+            [[ $md == *" $p "* ]] || W "build_style=$style needs $p in make_depends (unless another make_depends pulls it in)"
+        done
+    }
+    local overridden=0
+    [[ " $fns " == *" do_configure "* || " $fns " == *" do_build "* ]] && overridden=1
+    ((overridden)) || case $style in
+        meson) need meson ;;
+        cmake)
+            need cmake
+            if [[ ${D[configure_args]:-} =~ -G[[:space:]]*Ninja ]] && [[ $md != *' samurai '* && $md != *' meson '* ]]; then
+                W "configure_args uses -G Ninja, make_depends needs samurai"
+            fi ;;
+        cargo) need rust ;;
+        go) need go ;;
+        python3-pep517) need python python-build python-installer ;;
+        python3-module) need python ;;
+        perl-module|perl-ModuleBuild) need perl ;;
+        scons) need scons ;;
+        waf|waf3) need python ;;
+        zig-build) need zig ;;
+    esac
+    case $style in
+        cargo|go|haskell-stack)
+            if [[ ${D[allow_network]:-no} != yes && ${D[go_mod_mode]:-} != vendor ]] && ! grep -q vendor <<<"$body"; then
+                W "build_style=$style downloads dependencies at build time, set allow_network=yes or vendor them"
+            fi ;;
+    esac
+    if [[ $style == fetch && $fns != *do_install* ]]; then
+        E "build_style=fetch needs a do_install()"
+    fi
+    if [[ $style == custom && $fns != *do_install* ]]; then
+        W "build_style=custom without do_install() makes an empty package"
+    fi
+    if [[ ${D[allow_network]:-no} == yes && $style != cargo && $style != go && $style != haskell-stack ]]; then
+        N "allow_network=yes, the build can reach the network"
+    fi
+    local wrk=${D[wrk_src]:-}
+    if [[ -z $wrk && $nd -gt 0 ]]; then
+        case ${dist[0]} in
+            *codeberg.org/*/archive/*) W "Codeberg archives unpack to a folder without the version, set wrk_src" ;;
+            *git.sr.ht/*/archive/v*) W "sourcehut v-tag archives unpack to <name>-v<version>, set wrk_src" ;;
+        esac
+    fi
+
+    # use flags tested but not declared
+    local declared=" "
+    for f in $(words "${D[use_flags]:-}"); do declared+="${f#[-+]} "; done
+    local used
+    used=$( { grep -oE '\$\((use|usev|use_if|use_enable|use_with|use_bool|use_cmake)[[:space:]]+[A-Za-z0-9_+-]+' <<<"$body"
+              grep -oE '(^|[;&|{(]|if|then|else|!)[[:space:]]*(!?[[:space:]]*)use[[:space:]]+[A-Za-z0-9_+-]+' <<<"$body"
+            } | awk '{print $NF}' | sort -u )
+    for f in $used; do
+        [[ $declared == *" $f "* ]] || W "use flag '$f' is tested but not in use_flags, so flipping it never triggers a rebuild"
+    done
+
+    # dependency names: with the default flags they have to exist, with every
+    # flag on a missing one only means that flag can't be turned on yet
+    local def_deps all_deps dn p
+    def_deps=" $( { words "${D[depends]:-}"; words "${D[make_depends]:-}"
+                    for dn in $(words "${D[use_depends]:-}"); do printf '%s\n' "${dn%%:*}"; done; } | sort -u | tr '\n' ' ') "
+    all_deps=$( { words "$def_deps"; words "${A[depends]:-}"; words "${A[make_depends]:-}"; } | sort -u )
+    for p in $all_deps; do
+        [[ $p == "$name" ]] && { E "$name depends on itself"; continue; }
+        [[ -n ${REPO_PKGS[$p]:-} ]] && continue
+        [[ -n $core ]] || continue
+        [[ -n ${CORE_PKGS[$p]:-} ]] && continue
+        if [[ $def_deps == *" $p "* ]]; then
+            E "dependency '$p' is not a package in this repo or in core"
+        else
+            W "dependency '$p' (only with an optional use flag on) is not a package in this repo or in core"
+        fi
+    done
+    for dn in $(words "${D[use_depends]:-}"); do
+        [[ $dn == *:* ]] || E "use_depends entry '$dn' is not pkg:flag"
+    done
+    if [[ -n $core && -n ${CORE_PKGS[$name]:-} && $repo != "$core" ]]; then
+        N "shadows core's ${CORE_PKGS[$name]} for anyone with this repo above core"
+    fi
+
+    # patches and files
+    if [[ -d $dir/patches ]]; then
+        local pf
+        while IFS= read -r pf; do
+            case $pf in
+                *' '*) E "patch name '${pf##*/}' has whitespace, bpm splits on it" ;;
+                *.patch|*.diff) ;;
+                *) W "patches/${pf##*/} is ignored, bpm only applies *.patch and *.diff" ;;
+            esac
+        done < <(find "$dir/patches" -maxdepth 1 -type f | sort)
+    fi
+    if [[ -d $dir/files/sources ]]; then
+        local run
+        while IFS= read -r run; do
+            head -n 1 "$run" | grep -q '^#!' || W "${run#"$dir"/} has no #! line"
+        done < <(find "$dir/files/sources" -type f -name run)
+        grep -q 's6-rc/sources' "$abs" || W "files/sources exists but the template never installs it to /usr/share/s6-rc/sources"
+    fi
+
+    # watch file for pkg-bump
+    if [[ -f $dir/watch ]]; then
+        local wtype='' wurl='' wname='' wmatch='' wk wv
+        while IFS='=' read -r wk wv; do
+            wk=${wk//[[:space:]]/}
+            [[ -z $wk || $wk == \#* ]] && continue
+            case $wk in
+                type) wtype=$wv ;;
+                url) wurl=$wv ;;
+                name) wname=$wv ;;
+                match|tag|filter|ignore)
+                    [[ $wk == match ]] && wmatch=$wv
+                    [[ $wv == *'#'* ]] && E "watch: $wk contains #, pkg-bump can't use it"
+                    grep -qE -- "$wv" </dev/null 2>/dev/null; (($? == 2)) && E "watch: $wk is not a valid extended regex" ;;
+                series) ;;
+                *) W "watch: unknown key '$wk' (type url name tag match filter ignore series)" ;;
+            esac
+        done < "$dir/watch"
+        case $wtype in
+            git) [[ -n $wurl ]] || E "watch: type=git needs url=" ;;
+            url) [[ -n $wurl && -n $wmatch ]] || E "watch: type=url needs url= and match=" ;;
+            pypi|crates) [[ -n $wname ]] || E "watch: type=$wtype needs name=" ;;
+            '') E "watch: no type= (git, pypi, crates, url)" ;;
+            *) E "watch: unknown type '$wtype' (git, pypi, crates, url)" ;;
+        esac
+        head -n 1 "$abs" | grep -q '^# Generated by .*kde-gen' &&
+            N "watch next to a kde-gen template, pkg-bump skips it and kde-bump owns it"
+        grep -qE '^checksum="[^"]*"[[:space:]]*$' "$abs" ||
+            W "watch: pkg-bump can only rewrite a one-line checksum"
+    fi
+}
+
+# ---- run ------------------------------------------------------------------------
+
+files=()
+if ((${#targets[@]} == 0)); then
+    targets=("$repo")
+fi
+for t in "${targets[@]}"; do
+    if [[ -d $t ]]; then
+        while IFS= read -r f; do files+=("$f"); done < <(find "$t" -path '*/.git' -prune -o -type f -name template -print | sort)
+    elif [[ -f $t ]]; then
+        files+=("$t")
+    else
+        printf '%s: no such file or directory: %s\n' "$prog" "$t" >&2
+        exit 2
+    fi
+done
+
+for f in "${files[@]}"; do lint_one "$f"; done
+
+cur=$prog
+printf '%s: %d template(s), %d error(s), %d warning(s)\n' "$prog" "$n_files" "$n_err" "$n_warn" >&2
+((n_err == 0))
