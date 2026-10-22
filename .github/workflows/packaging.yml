@@ -1,0 +1,131 @@
+# Keeps Packaging/ honest.
+#
+# Every Wednesday and on demand (Actions > packaging > Run workflow): runs
+# Packaging/check-bpm against the bpm version core ships. When bpm changed in a
+# way Packaging/ doesn't cover, it opens one issue with the report (or
+# refreshes the open one), telling you to paste Packaging/UPDATE.md into a
+# chat with Claude. When everything matches again, it closes that issue.
+#
+# On every push and pull request that touches a template, patches, files,
+# watch files or Packaging/: runs lint-template over the whole repo with
+# dependency names checked against core, and shellcheck over the scripts.
+#
+# Uses the workflow's own GITHUB_TOKEN and the REST API, no gh CLI.
+name: packaging
+
+on:
+  schedule:
+    - cron: "23 6 * * 3"
+  workflow_dispatch:
+  push:
+    paths:
+      - "**/template"
+      - "**/patches/**"
+      - "**/files/**"
+      - "**/watch"
+      - "Packaging/**"
+      - ".github/workflows/packaging.yml"
+      - ".github/workflows/pkg-bump.yml"
+  pull_request:
+    paths:
+      - "**/template"
+      - "**/patches/**"
+      - "**/files/**"
+      - "**/watch"
+      - "Packaging/**"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lint:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Clone core for dependency names
+        run: git clone -q --depth 1 https://github.com/kkrruumm/basix-packages "$RUNNER_TEMP/core"
+
+      - name: shellcheck the Packaging scripts
+        run: shellcheck -s bash Packaging/lint-template Packaging/check-bpm Packaging/pkg-bump
+
+      - name: Lint every template
+        run: bash Packaging/lint-template --core "$RUNNER_TEMP/core"
+
+  bpm-check:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: packaging-bpm-check
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Run check-bpm
+        run: |
+          rc=0
+          bash Packaging/check-bpm >"$RUNNER_TEMP/report.txt" 2>&1 || rc=$?
+          cat "$RUNNER_TEMP/report.txt"
+          echo "CHECK_RC=$rc" >>"$GITHUB_ENV"
+          # 2 is check-bpm itself failing (clone, missing tool), that's a red run
+          [ "$rc" -le 1 ]
+
+      - name: Open, refresh or close the issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          TITLE: "Packaging: bpm changed, run Packaging/UPDATE.md"
+        run: |
+          # api METHOD PATH [curl args]: prints the body, or GitHub's error and fails
+          api() {
+            resp=$(curl -sS -X "$1" -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" -w '\n%{http_code}' \
+              "https://api.github.com/repos/$REPO$2" "${@:3}")
+            code=${resp##*$'\n'}
+            body=${resp%$'\n'*}
+            if [ "$code" -ge 300 ]; then
+              echo "GitHub API: $1 $2 returned HTTP $code" >&2
+              printf '%s\n' "$body" >&2
+              return 1
+            fi
+            printf '%s\n' "$body"
+          }
+          # the open issue this workflow made earlier, if any
+          num=$(api GET "/issues?state=open&creator=github-actions%5Bbot%5D&per_page=100" |
+                jq -r --arg t "$TITLE" '[.[] | select(.title == $t and (.pull_request | not))][0].number // empty')
+
+          if [ "$CHECK_RC" = 0 ]; then
+            if [ -n "$num" ]; then
+              jq -n '{body: "check-bpm passes again, Packaging/ matches the bpm core ships. Closing."}' |
+                api POST "/issues/$num/comments" -d @- >/dev/null
+              jq -n '{state: "closed", state_reason: "completed"}' |
+                api PATCH "/issues/$num" -d @- >/dev/null
+              echo "Closed issue #$num."
+            else
+              echo "Nothing changed, no issue to open."
+            fi
+            exit 0
+          fi
+
+          {
+            echo "check-bpm found changes in bpm that Packaging/ doesn't cover yet."
+            echo
+            echo "To fix it: open \`Packaging/UPDATE.md\`, copy everything below the line into a new chat with Claude, then copy the files from the tar it sends back into the repo. This issue closes itself on the next run after \`check-bpm\` passes."
+            echo
+            echo "Until then, package requests stop at their check-bpm step."
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/report.txt"
+            echo '```'
+          } >"$RUNNER_TEMP/body.md"
+
+          if [ -n "$num" ]; then
+            jq -n --rawfile b "$RUNNER_TEMP/body.md" '{body: $b}' |
+              api PATCH "/issues/$num" -d @- >/dev/null
+            echo "Refreshed issue #$num."
+          else
+            jq -n --arg t "$TITLE" --rawfile b "$RUNNER_TEMP/body.md" '{title: $t, body: $b}' |
+              api POST "/issues" -d @- | jq -r '"Opened issue #\(.number)."'
+          fi
