@@ -38,4 +38,5 @@ kio-extras -doc
 konsole x11 -doc
 libxkbcommon x11 xkbregistry
 mesa x11
+libepoxy x11
 pipewire pulse

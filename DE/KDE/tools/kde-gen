@@ -176,7 +176,9 @@ done
     echo "# support and keep the KDE handbooks (doc) off, since they cost build time."
     printf '%s\n' "$list" | awk '{ l = ($2 == "x11" ? " x11" : "") ($3 == "-doc" ? " -doc" : ""); if (l != "") print $1 l }'
     echo "libxkbcommon x11 xkbregistry"
+    # XWayland is built with GLX, which needs mesa's libGL (x11 only)
     echo "mesa x11"
+    echo "libepoxy x11"
     echo "pipewire pulse"
 } >"$out/package.use.tmp"
 mv -f "$out/package.use.tmp" "$out/package.use"
