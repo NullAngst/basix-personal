@@ -1,5 +1,5 @@
 pkg_name=kde-plasma-desktop
-version=6.8.1
+version=6.8.2
 revision=1
 build_style=meta
 short_desc="KDE Plasma 6 desktop on Wayland, with the session services Basix needs"

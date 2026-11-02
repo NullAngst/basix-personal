@@ -1,5 +1,5 @@
 pkg_name=kde-plasma-extras
-version=6.8.1
+version=6.8.2
 revision=1
 build_style=meta
 short_desc="Optional Plasma pieces: System Monitor, wallpapers, Aurorae, Flatpak KCM, ssh-askpass, browser integration"
