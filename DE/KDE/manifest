@@ -38,7 +38,7 @@
 # tagged sources for REQUIRED entries. Patches live in DE/KDE/patches/<pkg>/.
 
 set frameworks 6.31.0
-set plasma 6.8.1
+set plasma 6.8.2
 set gear 26.08.2
 set qt 6.12.0
 
@@ -212,7 +212,7 @@ end
 
 pkg kirigami-addons
   set standalone
-  version 1.15.0
+  version 1.16.0
   url https://download.kde.org/stable/kirigami-addons/kirigami-addons-${version}.tar.xz
   watch kde-flat https://download.kde.org/stable/kirigami-addons/
   home https://invent.kde.org/libraries/kirigami-addons
@@ -220,7 +220,7 @@ pkg kirigami-addons
   license BSD-2-Clause, BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT
   depends kcolorscheme kglobalaccel kguiaddons ki18n kiconthemes qt6-declarative qt6-multimedia
   docs no
-  checksum 01c4866b06402b08765a0fde68f8fe0ef3a729ad1fc107f1224794dc0e58daec
+  checksum 67366e75e7a1dfce7be79315ac11cf5e322ad0a640c0461c7d7d686f526b7f3f
 end
 
 pkg kquickimageeditor
@@ -1033,7 +1033,7 @@ pkg aurorae
   depends kcmutils kcolorscheme kconfig kcoreaddons kdecoration ki18n knewstuff kpackage ksvg qt6-base qt6-declarative
   make qt6-tools
   docs no
-  checksum 95ab046b68072344be76e2ff9c664bb23083320264fccb00894c822792b51acf
+  checksum ef5a7245d6c08a42c4f563bd2a4ca3d28647f4099ea5f557a9f3dd559a3b25af
 end
 
 pkg breeze
@@ -1044,7 +1044,7 @@ pkg breeze
   depends frameworkintegration kcmutils kcolorscheme kconfig kcoreaddons kdecoration kguiaddons ki18n kiconthemes kwindowsystem qt6-base qt6-declarative qt6-svg
   args -DBUILD_QT5=OFF
   docs no
-  checksum 49969d36bc8dcaa195d261ecd8d26f88e9d4f64e00789a21710e1188b1bdeb82
+  checksum 2b1322c1ef3d2176d0a44f4a01c2d54ab46b9cbf7691b0f6bb39c81f1c290e04
 end
 
 pkg breeze-gtk
@@ -1055,7 +1055,7 @@ pkg breeze-gtk
   depends breeze
   make python python-cairo sassc
   docs no
-  checksum 765a55fa9022cf9b8dd3f7747cad5e4c5a1880c1dfa6ea18c4fd7c3406cc7032
+  checksum 3d90040a420c4c5f72328b0501574008f3eeceba394ca0d08589185f1201a147
 end
 
 pkg flatpak-kcm
@@ -1066,7 +1066,7 @@ pkg flatpak-kcm
   depends kcmutils kconfig kcoreaddons kdeclarative ki18n kitemmodels kservice qt6-declarative qt6-svg
   run flatpak
   docs no
-  checksum e6bb61a57efed3ec88feeca9388e1f51b10ef75f13d1c6b60cd4435421cee79d
+  checksum 9efafe0a9c4a4be9700d45d293dbf9d903cf8ffa9f2d98d8457ba7351551be68
 end
 
 pkg kactivitymanagerd
@@ -1077,7 +1077,7 @@ pkg kactivitymanagerd
   depends kconfig kcoreaddons kcrash kdbusaddons kglobalaccel ki18n kio kwindowsystem kxmlgui qt6-base
   make boost-headers
   docs no
-  checksum 582c65d01c0adae47bd4a117631b52a4d91b75ec08ad0bd2316f4f13b9d07890
+  checksum 39f2216a33a699e50068eae238e847b1a96e9a8c1cfe1a22c266ebc56417d662
 end
 
 pkg kde-cli-tools
@@ -1088,7 +1088,7 @@ pkg kde-cli-tools
   depends kcmutils kconfig kcoreaddons kdeclarative kdesu ki18n kiconthemes kio kparts kservice kwindowsystem plasma-activities qt6-base qt6-svg
   x11 WITH_X11
   docs required
-  checksum cb1ba7a1dffbb80db46fabaefd11188393570e60aba96176465ff3b2b6fefc84
+  checksum 4836f607dbf56f07afd93064f07205ccc718868b6340e226a02e231d61ea6b22
 end
 
 pkg kde-gtk-config
@@ -1099,7 +1099,7 @@ pkg kde-gtk-config
   depends glib gsettings-desktop-schemas gtk3 karchive kcmutils kcolorscheme kconfig kconfigwidgets kcoreaddons kdbusaddons kdecoration kguiaddons ki18n kiconthemes kio knewstuff kwindowsystem qt6-base qt6-svg
   make sassc
   docs no
-  checksum bb1228b4803162ba9dedb3db9a7f70617d10d1aebec054e5e3c76a48815d1fd1
+  checksum cdcffc80265066690371666b75be319ae0308caa131e18e15f3b11f9348473f5
 end
 
 pkg kdecoration
@@ -1109,7 +1109,7 @@ pkg kdecoration
   license CC0-1.0, LGPL-2.1-only, LGPL-3.0-only
   depends kcoreaddons ki18n qt6-base
   docs no
-  checksum 5319e732758eea4921f4dc4af8ec09394481f569697bb5be69f786d0405f4e7a
+  checksum 830a1cabea84c41c0b58df5696506499756e1077ebe6542bcab5d2446564e59e
 end
 
 pkg kdeplasma-addons
@@ -1121,7 +1121,7 @@ pkg kdeplasma-addons
   make corrosion rust
   docs no
   network yes
-  checksum 68261095ffa04876e9b1e81a9100fd9eded99b15bbd0728b20c489fbbf6eef55
+  checksum 75a2e644c6992818f090dbd608937c93d4df27718d8e6e0a69f800201808c5c5
 end
 
 pkg kglobalacceld
@@ -1132,7 +1132,7 @@ pkg kglobalacceld
   depends kconfig kcoreaddons kcrash kdbusaddons kglobalaccel kio kjobwidgets knotifications kservice qt6-base xcb-util-keysyms
   make qt6-tools
   docs no
-  checksum 19642308b4a7e3d40a04c1f3466424fd31adf79be0f4335db65431673f36bc2c
+  checksum 8a8a323bfff51fe470d07ff74e0611af1c9f430e6d50aa98a2a518be44896392
 end
 
 pkg kinfocenter
@@ -1142,7 +1142,7 @@ pkg kinfocenter
   license BSD-2-Clause, BSD-3-Clause, CC0-1.0, FSFAP, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-or-later, LGPL-3.0-only
   depends kauth kcmutils kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kdeclarative ki18n kiconthemes kio kpackage kservice kwayland kwidgetsaddons kwindowsystem kxmlgui libdisplay-info libdrm libudev-zero lm_sensors mesa qt6-base qt6-declarative solid
   docs required
-  checksum c86ac1532a20416072c4287fbb4303eb2b49a91bfdef5c8f9ede9ef2420edd12
+  checksum a2aabf890c3bbf89575072a8df1e9f000f16601d5aa060f59d3242afd079fdd2
 end
 
 pkg kmenuedit
@@ -1152,7 +1152,7 @@ pkg kmenuedit
   license CC0-1.0, GPL-2.0-only, GPL-2.0-or-later
   depends kcrash kdbusaddons kglobalaccel ki18n kiconthemes kio kitemviews kwindowsystem kxmlgui qt6-base sonnet
   docs required
-  checksum 7e6a47f4cc8013e653ac53b980c5166c99e61a58a0273b40836adae9df287bdf
+  checksum e1a2e44ecdc64806b03226baec725d6f7c49aced7ff628875a3ebe4f0ad6ca08
 end
 
 pkg knighttime
@@ -1162,7 +1162,7 @@ pkg knighttime
   license BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT
   depends kconfig kcoreaddons kdbusaddons kholidays ki18n qt6-base qt6-positioning
   docs no
-  checksum 1ccdfda80eb79e5aa61700cf612e232b23504fd0408251418c569c56d909fa0d
+  checksum 3e2e02d7a80147fee91b92d1c409255aeea874464ea606a7d3bfcd9f8b52d621
 end
 
 pkg kpipewire
@@ -1173,7 +1173,7 @@ pkg kpipewire
   depends ffmpeg kcoreaddons ki18n kwayland libdrm libepoxy libva mesa pipewire qt6-base qt6-declarative qt6-wayland wayland
   make plasma-wayland-protocols
   docs no
-  checksum a6dd64def6fd5bd1554253714063f9d0405e69dcc0a3486dfabce11a99cd19e6
+  checksum ee50023812dc57daa33c3bcee0b2df039901d7347b2e520fa6cf0a18591484e0
 end
 
 pkg kscreen
@@ -1185,7 +1185,7 @@ pkg kscreen
   make wayland-protocols
   run hicolor-icon-theme
   docs no
-  checksum 71b819ef6cc7a4ebfb0cde4bf0ef042d2c7bfdf8af82509ae0e540a9bcf1fd88
+  checksum c7a68f929bf2d4c18293e112097024af6b6200c0e3d0f45c4a1b8f80cecf32e0
 end
 
 pkg kscreenlocker
@@ -1195,7 +1195,7 @@ pkg kscreenlocker
   license BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only
   depends elogind kcmutils kcrash kdeclarative kglobalaccel ki18n kidletime kio knotifications ksvg ktextwidgets kwayland kwindowsystem kxmlgui layer-shell-qt libkscreen libplasma libseccomp linux-pam qt6-base qt6-declarative solid xcb-util-keysyms
   docs no
-  checksum 7fc93d08ea1bbd59431f53d897ad5b0bcdff30ea072eae9b26fcdccc7ba8b171
+  checksum 4f7a87cd8eea7b2fc88028d8f7461e833d83368ebcb6383b3eed9d0cfac4dcc0
 end
 
 pkg ksshaskpass
@@ -1205,7 +1205,7 @@ pkg ksshaskpass
   license BSD-3-Clause, CC0-1.0, GPL-2.0-or-later
   depends kconfig kcoreaddons ki18n kwallet kwidgetsaddons qt6-base qtkeychain
   docs optional
-  checksum ab69c73922437aa5d50911af0e03ff347bd8df3ce2cc40bf37d67ecc4bf04cc4
+  checksum 434d9b89bce7c07f95d899cbbab976603933fd5f7a733b34ed9470730ba9df1e
 end
 
 pkg ksystemstats
@@ -1216,7 +1216,7 @@ pkg ksystemstats
   depends kcoreaddons kcrash kdbusaddons kio libcap libksysguard libnl libudev-zero lm_sensors qt6-base solid
   args -DWITH_NM=OFF
   docs no
-  checksum 480706b9a624ca9843e54098b3af67f1587ea707f1de2d52676da6b0545b023b
+  checksum ecdb2c3cdf8ca95446076847a2c83ac327fb4ff4ac461096d955dfbda649991d
 end
 
 pkg kwallet-pam
@@ -1227,7 +1227,7 @@ pkg kwallet-pam
   depends kwallet libgcrypt linux-pam
   run socat
   docs no
-  checksum 8674cd8f113a4c4eac211c8836ab4804c0c1790da9fa7088d6df04d0289c33d2
+  checksum ad4036d4349af622edc38106a734722c285df1e4632b8441e97741dfc73c8bdf
 end
 
 pkg kwayland
@@ -1238,7 +1238,7 @@ pkg kwayland
   depends mesa qt6-base qt6-wayland wayland
   make plasma-wayland-protocols qt6-tools wayland-protocols
   docs no
-  checksum c6fadad20969ff084054f2cde40aff3dbfe980d7d88e2e7c9e3f1d5de6f4c2ba
+  checksum 94d7247c5ffc37f439ca6c936ac7aa222e444e45c90ff45c0c70698a88b3f208
 end
 
 pkg kwin
@@ -1251,7 +1251,7 @@ pkg kwin
   run hwdata xwayland
   x11 KWIN_BUILD_X11
   docs optional
-  checksum 7209fac64cfb6b52ba3d9f10c0c1786cdf7691d6445f050affaef1650db3d42d
+  checksum 7c5a5a03a4277673cf04f1af7fb63e6d1ae0295de78cdcdc2d86e009ba3da440
 end
 
 pkg kwrited
@@ -1261,7 +1261,7 @@ pkg kwrited
   license CC0-1.0, GPL-2.0-or-later
   depends kcoreaddons kdbusaddons ki18n knotifications kpty qt6-base
   docs no
-  checksum b2eb5a5c0f5a03592c91af98522d7feb5564d6f5f648e2f41e15f3316ef9a097
+  checksum 1eed89d6b4d954191a6f47b3d29eff147296ea9ffb40212e2e18949b831a3d7d
 end
 
 pkg layer-shell-qt
@@ -1272,7 +1272,7 @@ pkg layer-shell-qt
   depends libxkbcommon qt6-base qt6-declarative qt6-wayland wayland
   make wayland-protocols
   docs no
-  checksum 11827786dedbf348d42bc889c1885af45c8ebfd5f5a49a23fc21c6a68d05b43b
+  checksum 7a3a81c9bc16735233d9b79afa2fe01e78599df2c70d320c1598546ea2a20855
 end
 
 pkg libkscreen
@@ -1283,7 +1283,7 @@ pkg libkscreen
   depends kconfig kwayland qt6-base wayland
   make plasma-wayland-protocols qt6-tools
   docs no
-  checksum 94d5efa094f0705475b8fd8211febc9c6c9f218cdf4d76f53329b172722796eb
+  checksum 396ee0b4d1f5245074b66a6b5e80db42c47cf2ac24e9effc2d555b85c98b6d86
 end
 
 pkg libksysguard
@@ -1294,7 +1294,7 @@ pkg libksysguard
   depends kauth kcompletion kconfig kconfigwidgets kcoreaddons kglobalaccel ki18n kiconthemes kio knewstuff kpackage kservice kwidgetsaddons kwindowsystem libcap libdrm libnl libplasma lm_sensors qt6-base qt6-declarative solid zlib
   make qt6-tools
   docs no
-  checksum abeb5424c0fc1b863ec07a1d58cbaf04e0ff485d9b3cfed7d0a53eb6c8c507a4
+  checksum e83cfb72931ff6d6bed790c46a11b62ed87dcd6843241882681fd02d5107f575
 end
 
 pkg libplasma
@@ -1305,7 +1305,7 @@ pkg libplasma
   depends karchive kcmutils kcolorscheme kconfig kconfigwidgets kcoreaddons kdbusaddons kdeclarative kglobalaccel kguiaddons ki18n kiconthemes kio kirigami knotifications kpackage kservice ksvg kwayland kwindowsystem kxmlgui mesa plasma-activities qt6-base qt6-declarative qt6-svg wayland
   make plasma-wayland-protocols qt6-tools wayland-protocols
   docs optional
-  checksum 40e9fb14530b6e508ea794d22dc68991a51de7082a56e20b120ee94bbff4bad6
+  checksum 98cf8f6f693e041e6719e2bcd985bebeab603152bf9e68bc3c8a14ea600aa31b
 end
 
 pkg milou
@@ -1315,7 +1315,7 @@ pkg milou
   license CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only
   depends kconfig kcoreaddons kdeclarative ki18n kitemmodels krunner kservice ksvg libplasma qt6-base qt6-declarative
   docs no
-  checksum a72badfe3f181f498d816966663c39ba42d7bc877dfe3dcaa12d1ebb5fdb7b45
+  checksum 9de079ee71a6065a1a167d664b71afa8b84423b9308c6f707a8ce2ebda3b808e
 end
 
 pkg ocean-sound-theme
@@ -1325,7 +1325,7 @@ pkg ocean-sound-theme
   license BSD-2-Clause, CC-BY-SA-4.0, CC0-1.0
   make qt6-tools
   docs no
-  checksum bb0af9b8055ddd6ec1d2e2210970f9c3827ca59f6584af1e116bf953038de794
+  checksum 3b7feb66e25a3007323b0d13ee9e31055a705d72a700455626e4add1c0577f5b
 end
 
 pkg plasma-activities
@@ -1336,7 +1336,7 @@ pkg plasma-activities
   depends kconfig kcoreaddons kwindowsystem qt6-base qt6-declarative
   make boost-headers qt6-tools
   docs no
-  checksum 60fbfcca462af411d2ed1555c953bb35f4216c973d4260c88f0ed067c705e8b3
+  checksum 8b0fc05392c70893ecffad6491c45e6e101592c3709feae5a35843c37d0abd48
 end
 
 pkg plasma-activities-stats
@@ -1347,7 +1347,7 @@ pkg plasma-activities-stats
   depends kconfig kcoreaddons plasma-activities qt6-base qt6-declarative
   make boost-headers qt6-tools
   docs no
-  checksum eb74fa3ba8724900fc295e5ac86eae13140edae5dccdf31bf0a85ba5f6fa69cf
+  checksum d32d64cc108b30d11559ab781b384ceae21a1b43fc0dbab0cf5e3695c67db077
 end
 
 pkg plasma-browser-integration
@@ -1357,7 +1357,7 @@ pkg plasma-browser-integration
   license CC0-1.0, GPL-2.0-or-later, GPL-3.0-or-later, MIT
   depends kconfig kcoreaddons kcrash kdbusaddons kfilemetadata ki18n kio kjobwidgets knotifications krunner kservice kstatusnotifieritem plasma-activities purpose qt6-base
   docs no
-  checksum 644d9ebf8fc96ff3db689821cde99abbf22c6d008486f0a347c70c869e3257e3
+  checksum 8d3567a3fda0e76970807a4d7fd5c977e572cb873b45d80640c1fedbc66d74e8
 end
 
 pkg plasma-desktop
@@ -1370,7 +1370,7 @@ pkg plasma-desktop
   run xdg-user-dirs xkeyboard-config
   args -DBUILD_KCM_TABLET=OFF
   docs required
-  checksum abf02ee1e12976a79d28b5cfee1d7eb6d2a1342dcabf4380be6d62a70a6201e8
+  checksum e69ba29c298203f9d5ccb147b93a0832efcfb70b93958d7eb3a7f4918f7356ce
 end
 
 pkg plasma-integration
@@ -1384,7 +1384,7 @@ pkg plasma-integration
   args -DBUILD_QT5=OFF -DCMAKE_DISABLE_FIND_PACKAGE_FontHack=ON
   x11 WITH_X11
   docs no
-  checksum 8af67038cc54a6999a36302df2782240c7de913c831b75a88cb5dbaf2fd813ab
+  checksum fa4dada6b43c0815bf9f23ca68310c975fec57dccc6363215366e924f65903d0
 end
 
 pkg plasma-pa
@@ -1394,7 +1394,7 @@ pkg plasma-pa
   license BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only
   depends glib kcmutils kconfig kcoreaddons kdbusaddons kdeclarative kglobalaccel ki18n knotifications kquickcharts kstatusnotifieritem ksvg libcanberra libplasma plasma-workspace pulseaudio pulseaudio-qt qt6-base qt6-declarative
   docs required
-  checksum 86a8c27ed2136b098e073871e6a4258c55a5bbcbf51f2e85ad51c56f85203c6f
+  checksum 1d22395b25da7098bbf36c7fde14f7d7325cf15329701edb80add74f7948830e
 end
 
 pkg plasma-systemmonitor
@@ -1404,7 +1404,7 @@ pkg plasma-systemmonitor
   license BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-3.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, LGPL-3.0-or-later
   depends kconfig kcrash kdbusaddons kdeclarative kglobalaccel ki18n kio kitemmodels knewstuff kpackage kservice ksystemstats kwindowsystem libksysguard qt6-base qt6-declarative
   docs no
-  checksum ca648fb6456ac0fc8a4a36c8bffb6cb26fb7cfe869f91b805cf08cde93a7cd18
+  checksum 6ab537939ec6362929a4efe585e425ac240d39248985883652dd2c0722d25da6
 end
 
 pkg plasma-workspace
@@ -1418,7 +1418,7 @@ pkg plasma-workspace
   args -DBUILD_GEOTIMEZONED=OFF -DWITH_X11_SESSION=OFF -DINSTALL_SDDM_WAYLAND_SESSION=OFF
   x11 WITH_X11
   docs optional
-  checksum 09eccba388eed3668e475f1c727e151a871af772600983deaf477a9301d38547
+  checksum 57fdec4263148245e786a0a881ce1285c6f00c1e861143b05a77d423579d47f1
 end
 
 pkg plasma-workspace-wallpapers
@@ -1428,7 +1428,7 @@ pkg plasma-workspace-wallpapers
   license GPL-2.0-or-later
   make qt6-tools
   docs no
-  checksum de7fb366ffb7db6463bd56d210559728d47ea1948fc2333a09cbcae5c36c6421
+  checksum d9e70b962a669a9ccbba902e26a645fd411806768ced73e22c4a97cd47fd4929
 end
 
 pkg plasma5support
@@ -1439,7 +1439,7 @@ pkg plasma5support
   depends kconfig kcoreaddons kguiaddons kholidays ki18n kidletime kio knotifications kpackage kservice kunitconversion kxmlgui libksysguard qt6-base qt6-declarative solid
   make qt6-tools
   docs no
-  checksum c7fb789d449896b9fcc37855e1936c5eb8f687df454520c235e4b66ab6acff2b
+  checksum fa3dfaf647ffff7d6bf03b29417f33968cd5820b6d9282a8ae1cd91231d8bb9c
 end
 
 pkg polkit-kde-agent-1
@@ -1449,7 +1449,7 @@ pkg polkit-kde-agent-1
   license CC0-1.0, GPL-2.0-or-later
   depends kcoreaddons kcrash kdbusaddons ki18n kiconthemes knotifications kwidgetsaddons kwindowsystem polkit-qt6 qt6-base qt6-declarative
   docs no
-  checksum 10ef7fd59363868070f25079a7ce50b839d5420ffcfa13a80ec7f08e122cc793
+  checksum a76af3bd365874f85b56b5dbf034f28e6a795c70eccd8eec432f8afeb5a58118
 end
 
 pkg powerdevil
@@ -1460,7 +1460,7 @@ pkg powerdevil
   depends kauth kcmutils kconfig kcrash kdbusaddons kglobalaccel ki18n kidletime kio kirigami kitemmodels knotifications knotifyconfig krunner kwayland kwindowsystem kxmlgui libcap libkscreen libplasma libudev-zero plasma-activities plasma-workspace qcoro qt6-base qt6-declarative solid wayland
   make plasma-wayland-protocols
   docs optional
-  checksum 2e4026a1f8a12c95046b8fbf25c2cc67000c59a0e682e097d286bda59c29a2c4
+  checksum 1b0c0e6416860e352811129ce22e73951d0fbec918b2632bde07fe6b1f32d4aa
 end
 
 pkg qqc2-breeze-style
@@ -1470,7 +1470,7 @@ pkg qqc2-breeze-style
   license CC0-1.0, GPL-2.0-or-later, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only
   depends kcolorscheme kconfig kconfigwidgets kguiaddons kiconthemes kirigami kquickcharts qt6-base qt6-declarative
   docs no
-  checksum 5d1bd036565e8db262a27567d99c0aa872f23cd1965555911cae76b065af5fbf
+  checksum d181fb6844b180aded1c4c77608c497a040abdf701342cd162b6491f4eba4cda
 end
 
 pkg spectacle
@@ -1482,7 +1482,7 @@ pkg spectacle
   make plasma-wayland-protocols
   x11 WITH_X11
   docs optional
-  checksum 91c8ecb0ab08156cefe92eb5b7358a58e50acd7ade83ccc97f6e858def8250b8
+  checksum 17e205fe676dc6b1f88c4f77759b72da475844215ffea664c83b67e70362527a
 end
 
 pkg systemsettings
@@ -1492,7 +1492,7 @@ pkg systemsettings
   license BSD-2-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.1-or-later
   depends kauth kcmutils kcolorscheme kconfig kcrash kdbusaddons kdeclarative kguiaddons ki18n kiconthemes kio kirigami kitemmodels kitemviews kjobwidgets kpackage krunner kservice kwidgetsaddons kwindowsystem kxmlgui plasma-activities plasma-activities-stats plasma-workspace qt6-base qt6-declarative
   docs optional
-  checksum 461be1950a12c8f9596e01ce2477b821cb771cf3187c2cf6d3f0422c8fd02426
+  checksum e683bb019ab909a97b0044c97b68db3f8822a91710eb3b8050a36592a84878e5
 end
 
 pkg union
@@ -1504,7 +1504,7 @@ pkg union
   make qt6-shadertools
   args -DBUILD_INPUT_PLASMASVG=OFF -DBUILD_TOOLS=OFF -DBUILD_EXAMPLES=OFF
   docs no
-  checksum ac5d53391f4365073d3a414eef9e0733c2997bc6a64c4ffac504859aa9554d05
+  checksum 493a6768cbc89889601fdda13c6c709579393548ba523e1a1d50ea05b58d27c3
 end
 
 pkg xdg-desktop-portal-kde
@@ -1516,7 +1516,7 @@ pkg xdg-desktop-portal-kde
   make plasma-wayland-protocols wayland-protocols
   run xdg-desktop-portal
   docs no
-  checksum 714df6c4c0a977746ae6a6bf28c0d78e96663fae9b6406c6fb70d6a8275cf728
+  checksum a1c948f85cea07dfac5d08512a46f5ff004326c9922f2b78d81d253334e21ac1
 end
 
 
