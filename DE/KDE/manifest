@@ -39,7 +39,7 @@
 
 set frameworks 6.31.0
 set plasma 6.8.2
-set gear 26.08.2
+set gear 26.08.3
 set qt 6.12.0
 
 # ---- Qt 6 ------------------------------------------------------------------
@@ -212,7 +212,7 @@ end
 
 pkg kirigami-addons
   set standalone
-  version 1.16.0
+  version 1.16.1
   url https://download.kde.org/stable/kirigami-addons/kirigami-addons-${version}.tar.xz
   watch kde-flat https://download.kde.org/stable/kirigami-addons/
   home https://invent.kde.org/libraries/kirigami-addons
@@ -220,7 +220,7 @@ pkg kirigami-addons
   license BSD-2-Clause, BSD-3-Clause, CC-BY-SA-4.0, CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT
   depends kcolorscheme kglobalaccel kguiaddons ki18n kiconthemes qt6-declarative qt6-multimedia
   docs no
-  checksum 67366e75e7a1dfce7be79315ac11cf5e322ad0a640c0461c7d7d686f526b7f3f
+  checksum b8a9c3f3d003ae06bb5747ed928fbc5e5d3edb884d9a75ebe60077c2fbf7d2db
 end
 
 pkg kquickimageeditor
@@ -1530,7 +1530,7 @@ pkg ark
   depends karchive kconfig kcrash kdbusaddons kfilemetadata ki18n kiconthemes kio kitemmodels kparts kpty kservice kwidgetsaddons kwindowsystem libarchive qt6-base xz zlib zstd
   run shared-mime-info
   docs required
-  checksum f3dbf7c17ad55c86c9824a93b8748e1b7757c89b545771e4c92c3af4236af472
+  checksum 8294b881c4a7657c6cc6c555d924e08c4eb635c48fb249acb7f7aab52ae3fc72
 end
 
 pkg baloo-widgets
@@ -1540,7 +1540,7 @@ pkg baloo-widgets
   license GPL-2.0-only, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only
   depends baloo kconfig kfilemetadata ki18n kio kservice qt6-base
   docs no
-  checksum de285cb4c8109ddcfbfea95fe713d0dbb26b9b8412864ecc73d2cf0d6d23c4d5
+  checksum 1cb88b8cfa08ef8d1c04f28bb702c026586ef404ebe70e134f920abcb584ea86
 end
 
 pkg dolphin
@@ -1550,7 +1550,7 @@ pkg dolphin
   license BSD-2-Clause, BSD-3-Clause, CC0-1.0, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-3.0-only, MIT
   depends baloo baloo-widgets kbookmarks kcmutils kcodecs kcolorscheme kcompletion kconfig kcoreaddons kcrash kdbusaddons kfilemetadata kguiaddons ki18n kiconthemes kio knewstuff knotifications kparts ktextwidgets kuserfeedback kwidgetsaddons kwindowsystem musl-fts plasma-activities qt6-base qt6-multimedia solid
   docs optional
-  checksum c5cf8352ea7a14e50a0d2f756c5497ebd473121c0700d4f0652e68aea6335478
+  checksum 73bd91f8a78ce8dee9c8a3f066e617705cd8b6477b1f8b90ff7a19c04c288155
 end
 
 pkg kate
@@ -1560,7 +1560,7 @@ pkg kate
   license CC0-1.0, GPL-2.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, MIT
   depends kconfig kcoreaddons kcrash kdbusaddons kguiaddons ki18n kiconthemes kio kitemmodels kjobwidgets knewstuff kparts ktexteditor kuserfeedback kwidgetsaddons kwindowsystem kxmlgui libplasma plasma-activities qt6-base qt6-declarative threadweaver
   docs optional
-  checksum d98e3f8f748cb0b97d8683a5c5d07682321db4ae524075f7dd9276c2b1d6f35b
+  checksum 872740a29e6822a138bfc45bc70d83b9167e130014bc398f1c53c64d8307ff7d
 end
 
 pkg kio-extras
@@ -1572,7 +1572,7 @@ pkg kio-extras
   run shared-mime-info
   args -DWITH_LIBPROXY=OFF
   docs required
-  checksum 7884869a1e32dcf918c20d8594dd7ec76145c31d5e7ff324c9cbb3f88eab3196
+  checksum ae811d53e4d527dc11f1a2c7e9cb7a71c53db5997de4a98c742e6b814e52cf92
 end
 
 pkg konsole
@@ -1583,6 +1583,6 @@ pkg konsole
   depends icu kbookmarks kcompletion kconfig kconfigwidgets kcoreaddons kcrash kdbusaddons kglobalaccel kguiaddons ki18n kiconthemes kio knewstuff knotifications knotifyconfig kparts kpty kservice ktextwidgets kwidgetsaddons kwindowsystem kxmlgui ncurses qcoro qt6-base qt6-multimedia
   x11 WITH_X11
   docs optional
-  checksum 82ed0ee6aab87e54e8bcaebd8045d0a73a8ccfcb0781e73fce87cfdb1a3f1773
+  checksum ea4679a3eca75265ad5552adcf73dd1a9d6411a10940407f4134645bc1f9663c
 end
 

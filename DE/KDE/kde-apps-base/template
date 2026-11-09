@@ -1,5 +1,5 @@
 pkg_name=kde-apps-base
-version=26.08.2
+version=26.08.3
 revision=1
 build_style=meta
 short_desc="Konsole, Dolphin, Kate and Ark"
